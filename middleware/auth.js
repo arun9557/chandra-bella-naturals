@@ -1,5 +1,5 @@
-const jwt = require('jsonwebtoken');
 const ErrorResponse = require('../utils/errorResponse');
+const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 
 // Protect routes
@@ -45,6 +45,37 @@ exports.authorize = (...roles) => {
         )
       );
     }
+    next();
+  };
+};
+
+// Check if user is the owner of the resource
+exports.checkOwnership = (model) => {
+  return async (req, res, next) => {
+    const resource = await model.findById(req.params.id);
+
+    if (!resource) {
+      return next(
+        new ErrorResponse(
+          `Resource not found with id of ${req.params.id}`,
+          404
+        )
+      );
+    }
+
+    // Make sure user is resource owner or admin
+    if (
+      resource.user.toString() !== req.user.id &&
+      req.user.role !== 'admin'
+    ) {
+      return next(
+        new ErrorResponse(
+          `User ${req.user.id} is not authorized to update this resource`,
+          401
+        )
+      );
+    }
+
     next();
   };
 };

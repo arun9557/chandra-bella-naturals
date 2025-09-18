@@ -3,38 +3,46 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 
-const UserSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: [true, 'Please add a name']
+const UserSchema = new mongoose.Schema(
+  {
+    name: {
+      type: String,
+      required: [true, 'Please add a name'],
+      trim: true,
+      maxlength: [50, 'Name cannot be more than 50 characters']
+    },
+    email: {
+      type: String,
+      required: [true, 'Please add an email'],
+      unique: true,
+      match: [
+        /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
+        'Please add a valid email'
+      ]
+    },
+    role: {
+      type: String,
+      enum: ['user', 'admin'],
+      default: 'user'
+    },
+    password: {
+      type: String,
+      required: [true, 'Please add a password'],
+      minlength: [6, 'Password must be at least 6 characters'],
+      select: false
+    },
+    resetPasswordToken: String,
+    resetPasswordExpire: Date,
+    createdAt: {
+      type: Date,
+      default: Date.now
+    }
   },
-  email: {
-    type: String,
-    required: [true, 'Please add an email'],
-    unique: true,
-    match: [
-      /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
-      'Please add a valid email'
-    ]
-  },
-  role: {
-    type: String,
-    enum: ['user', 'admin'],
-    default: 'user'
-  },
-  password: {
-    type: String,
-    required: [true, 'Please add a password'],
-    minlength: 6,
-    select: false
-  },
-  resetPasswordToken: String,
-  resetPasswordExpire: Date,
-  createdAt: {
-    type: Date,
-    default: Date.now
+  {
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true }
   }
-});
+);
 
 // Encrypt password using bcrypt
 UserSchema.pre('save', async function(next) {
@@ -74,5 +82,26 @@ UserSchema.methods.getResetPasswordToken = function() {
 
   return resetToken;
 };
+
+// Cascade delete orders when a user is deleted
+UserSchema.pre('remove', async function(next) {
+  await this.model('Order').deleteMany({ user: this._id });
+  next();
+});
+
+// Reverse populate with virtuals
+UserSchema.virtual('orders', {
+  ref: 'Order',
+  localField: '_id',
+  foreignField: 'user',
+  justOne: false
+});
+
+UserSchema.virtual('reviews', {
+  ref: 'Review',
+  localField: '_id',
+  foreignField: 'user',
+  justOne: false
+});
 
 module.exports = mongoose.model('User', UserSchema);
