@@ -789,17 +789,17 @@ body {
   gap: 2rem;
 }
 
-.logo h1 {
-  color: var(--brand-primary);
-  font-size: 1.5rem;
-  font-weight: var(--font-weight-bold);
-  margin-bottom: 0.25rem;
+.logo img {
+  height: 40px;
+  width: auto;
+  display: block;
+  object-fit: contain;
 }
 
-.tagline {
-  color: var(--brand-gray);
-  font-size: 0.875rem;
-  font-style: italic;
+.logo {
+  display: flex;
+  align-items: center;
+  padding: 10px 0;
 }
 
 /* Navigation */
