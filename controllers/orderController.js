@@ -62,181 +62,94 @@ exports.createOrder = asyncHandler(async (req, res, next) => {
   });
 
   const createdOrder = await order.save();
-
   res.status(201).json(createdOrder);
 });
 
-// @desc    Get order by ID
+// @desc    Get single order by ID
 // @route   GET /api/v1/orders/:id
 // @access  Private
-exports.getOrderById = asyncHandler(async (req, res, next) => {
-  const order = await Order.findById(req.params.id).populate(
-    'user',
-    'name email'
-  );
+exports.getSingleOrder = asyncHandler(async (req, res, next) => {
+  const order = await Order.findById(req.params.id).populate('user', 'name email');
 
   if (!order) {
     return next(new ErrorResponse('Order not found', 404));
   }
 
-  // Make sure the order belongs to the user or user is admin
+  // Make sure user is order owner or admin
   if (order.user._id.toString() !== req.user._id.toString() && req.user.role !== 'admin') {
-    return next(
-      new ErrorResponse('Not authorized to view this order', 401)
-    );
+    return next(new ErrorResponse('Not authorized to view this order', 401));
   }
 
-  res.status(200).json(order);
+  res.status(200).json({
+    success: true,
+    data: order
+  });
 });
 
-// @desc    Update order to paid
-// @route   PUT /api/v1/orders/:id/pay
+// @desc    Get logged in user orders
+// @route   GET /api/v1/orders/me
 // @access  Private
-exports.updateOrderToPaid = asyncHandler(async (req, res, next) => {
-  const order = await Order.findById(req.params.id);
+exports.myOrders = asyncHandler(async (req, res, next) => {
+  const orders = await Order.find({ user: req.user.id });
+  res.status(200).json({
+    success: true,
+    count: orders.length,
+    data: orders
+  });
+});
 
-  if (!order) {
-    return next(new ErrorResponse('Order not found', 404));
-  }
-
-  // Make sure the order belongs to the user or user is admin
-  if (order.user.toString() !== req.user._id.toString() && req.user.role !== 'admin') {
-    return next(
-      new ErrorResponse('Not authorized to update this order', 401)
-    );
-  }
-
-  order.isPaid = true;
-  order.paidAt = Date.now();
-  order.paymentResult = {
-    id: req.body.id,
-    status: req.body.status,
-    update_time: req.body.update_time,
-    email_address: req.body.payer.email_address
-  };
-
-  const updatedOrder = await order.save();
-
-  res.status(200).json(updatedOrder);
+// @desc    Get all orders
+// @route   GET /api/v1/orders
+// @access  Private/Admin
+exports.allOrders = asyncHandler(async (req, res, next) => {
+  const orders = await Order.find({}).populate('user', 'id name');
+  
+  res.status(200).json({
+    success: true,
+    count: orders.length,
+    data: orders
+  });
 });
 
 // @desc    Update order to delivered
-// @route   PUT /api/v1/orders/:id/deliver
+// @route   PUT /api/v1/orders/:id
 // @access  Private/Admin
-exports.updateOrderToDelivered = asyncHandler(async (req, res, next) => {
+exports.updateOrder = asyncHandler(async (req, res, next) => {
   const order = await Order.findById(req.params.id);
 
   if (!order) {
     return next(new ErrorResponse('Order not found', 404));
+  }
+
+  if (order.isDelivered) {
+    return next(new ErrorResponse('Order already delivered', 400));
   }
 
   order.isDelivered = true;
   order.deliveredAt = Date.now();
 
   const updatedOrder = await order.save();
-
-  res.status(200).json(updatedOrder);
-});
-
-// @desc    Get logged in user orders
-// @route   GET /api/v1/orders/myorders
-// @access  Private
-exports.getMyOrders = asyncHandler(async (req, res, next) => {
-  const orders = await Order.find({ user: req.user._id });
-  res.status(200).json(orders);
-});
-
-// @desc    Get all orders
-// @route   GET /api/v1/orders
-// @access  Private/Admin
-exports.getOrders = asyncHandler(async (req, res, next) => {
-  res.status(200).json(res.advancedResults);
-});
-
-// @desc    Update order status
-// @route   PUT /api/v1/orders/:id/status
-// @access  Private/Admin
-exports.updateOrderStatus = asyncHandler(async (req, res, next) => {
-  const { status } = req.body;
   
-  const validStatuses = [
-    'processing',
-    'shipped',
-    'delivered',
-    'cancelled',
-    'refunded'
-  ];
-
-  if (!validStatuses.includes(status)) {
-    return next(
-      new ErrorResponse(
-        `Invalid status. Status must be one of: ${validStatuses.join(', ')}`,
-        400
-      )
-    );
-  }
-
-  const order = await Order.findById(req.params.id);
-
-  if (!order) {
-    return next(new ErrorResponse('Order not found', 404));
-  }
-
-  // If order is being marked as delivered, set deliveredAt
-  if (status === 'delivered' && !order.isDelivered) {
-    order.deliveredAt = Date.now();
-    order.isDelivered = true;
-  }
-
-  // If order is being cancelled, return items to stock
-  if (status === 'cancelled' && order.status !== 'cancelled') {
-    for (const item of order.orderItems) {
-      await Product.findByIdAndUpdate(
-        item.product,
-        { $inc: { quantity: item.quantity } },
-        { new: true, runValidators: true }
-      );
-    }
-  }
-
-  order.status = status;
-  order.updatedAt = Date.now();
-
-  const updatedOrder = await order.save();
-
   res.status(200).json({
     success: true,
     data: updatedOrder
   });
 });
 
-// @desc    Get monthly income
-// @route   GET /api/v1/orders/monthly-income
+// @desc    Delete order
+// @route   DELETE /api/v1/orders/:id
 // @access  Private/Admin
-exports.getMonthlyIncome = asyncHandler(async (req, res, next) => {
-  const date = new Date();
-  const lastYear = new Date(date.setFullYear(date.getFullYear() - 1));
+exports.deleteOrder = asyncHandler(async (req, res, next) => {
+  const order = await Order.findById(req.params.id);
 
-  const income = await Order.aggregate([
-    {
-      $match: {
-        createdAt: { $gte: lastYear },
-        isPaid: true
-      }
-    },
-    {
-      $project: {
-        month: { $month: "$createdAt" },
-        sales: "$totalPrice"
-      }
-    },
-    {
-      $group: {
-        _id: "$month",
-        total: { $sum: "$sales" }
-      }
-    }
-  ]);
+  if (!order) {
+    return next(new ErrorResponse('Order not found', 404));
+  }
 
-  res.status(200).json(income);
+  await order.remove();
+  
+  res.status(200).json({
+    success: true,
+    data: {}
+  });
 });
