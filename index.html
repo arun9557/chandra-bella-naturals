@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Chandra Bella Naturals - Embrace Your Natural Beauty</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <h1>The Chandra Bella Naturals</h1>
+                    <span class="tagline">Embrace Your Natural Beauty</span>
+                </div>
+                
+                <nav class="main-nav">
+                    <ul class="nav-list">
+                        <li><a href="#home" class="nav-link active">Home</a></li>
+                        <li class="dropdown">
+                            <a href="#shop" class="nav-link">Shop <i class="fas fa-chevron-down"></i></a>
+                            <ul class="dropdown-menu">
+                                <li><a href="#face" data-category="face">Face</a></li>
+                                <li><a href="#lips" data-category="lips">Lips</a></li>
+                                <li><a href="#skincare" data-category="skincare">Skincare</a></li>
+                                <li><a href="#hair" data-category="hair">Hair</a></li>
+                                <li><a href="#body" data-category="body">Body</a></li>
+                            </ul>
+                        </li>
+                        <li><a href="#about" class="nav-link">About</a></li>
+                        <li><a href="#contact" class="nav-link">Contact</a></li>
+                    </ul>
+                </nav>
+                
+                <div class="header-actions">
+                    <div class="search-box">
+                        <input type="text" placeholder="Search products..." id="search-input">
+                        <i class="fas fa-search"></i>
+                    </div>
+                    <button class="cart-btn" onclick="toggleCart()">
+                        <i class="fas fa-shopping-bag"></i>
+                        <span class="cart-count" id="cart-count">0</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Mobile Menu Button -->
+    <button class="mobile-menu-btn" onclick="toggleMobileMenu()">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <!-- Main Content -->
+    <main>
+        <!-- Home Page -->
+        <section id="home" class="page active">
+            <!-- Hero Banner -->
+            <div class="hero-banner">
+                <div class="container">
+                    <div class="hero-content">
+                        <div class="hero-text">
+                            <h2>Discover Pure Natural Beauty</h2>
+                            <p>Premium natural beauty products crafted with love and the finest botanical ingredients</p>
+                            <button class="btn btn--primary btn--lg" onclick="scrollToSection('featured')">Shop Now</button>
+                        </div>
+                        <div class="hero-image">
+                            <div class="placeholder-image hero-img"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Brand Values -->
+            <div class="brand-values">
+                <div class="container">
+                    <div class="values-grid">
+                        <div class="value-item">
+                            <i class="fas fa-leaf"></i>
+                            <h4>100% Natural</h4>
+                            <p>Pure natural ingredients</p>
+                        </div>
+                        <div class="value-item">
+                            <i class="fas fa-heart"></i>
+                            <h4>Cruelty-Free</h4>
+                            <p>Never tested on animals</p>
+                        </div>
+                        <div class="value-item">
+                            <i class="fas fa-recycle"></i>
+                            <h4>Sustainable</h4>
+                            <p>Eco-friendly packaging</p>
+                        </div>
+                        <div class="value-item">
+                            <i class="fas fa-certificate"></i>
+                            <h4>Dermatologically Tested</h4>
+                            <p>Safe for all skin types</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Featured Products -->
+            <div id="featured" class="featured-products">
+                <div class="container">
+                    <h2 class="section-title">Featured Products</h2>
+                    <div class="products-grid" id="featured-products">
+                        <!-- Products will be loaded here by JavaScript -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Categories -->
+            <div class="categories-section">
+                <div class="container">
+                    <h2 class="section-title">Shop by Category</h2>
+                    <div class="categories-grid">
+                        <div class="category-card" onclick="showCategory('face')">
+                            <div class="placeholder-image category-img"></div>
+                            <h3>Face</h3>
+                        </div>
+                        <div class="category-card" onclick="showCategory('lips')">
+                            <div class="placeholder-image category-img"></div>
+                            <h3>Lips</h3>
+                        </div>
+                        <div class="category-card" onclick="showCategory('skincare')">
+                            <div class="placeholder-image category-img"></div>
+                            <h3>Skincare</h3>
+                        </div>
+                        <div class="category-card" onclick="showCategory('hair')">
+                            <div class="placeholder-image category-img"></div>
+                            <h3>Hair</h3>
+                        </div>
+                        <div class="category-card" onclick="showCategory('body')">
+                            <div class="placeholder-image category-img"></div>
+                            <h3>Body</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Newsletter -->
+            <div class="newsletter">
+                <div class="container">
+                    <div class="newsletter-content">
+                        <h3>Stay Beautiful with Our Updates</h3>
+                        <p>Get exclusive offers, beauty tips, and new product launches</p>
+                        <form class="newsletter-form">
+                            <input type="email" placeholder="Enter your email address" required>
+                            <button type="submit" class="btn btn--primary">Subscribe</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Shop Page -->
+        <section id="shop" class="page">
+            <div class="container">
+                <div class="shop-header">
+                    <h2>All Products</h2>
+                    <div class="shop-filters">
+                        <select id="category-filter">
+                            <option value="">All Categories</option>
+                            <option value="face">Face</option>
+                            <option value="lips">Lips</option>
+                            <option value="skincare">Skincare</option>
+                            <option value="hair">Hair</option>
+                            <option value="body">Body</option>
+                        </select>
+                        <select id="price-filter">
+                            <option value="">All Prices</option>
+                            <option value="0-500">₹0 - ₹500</option>
+                            <option value="500-800">₹500 - ₹800</option>
+                            <option value="800-1200">₹800 - ₹1200</option>
+                            <option value="1200+">₹1200+</option>
+                        </select>
+                        <select id="rating-filter">
+                            <option value="">All Ratings</option>
+                            <option value="4.5+">4.5+ Stars</option>
+                            <option value="4+">4+ Stars</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="products-grid" id="all-products">
+                    <!-- Products will be loaded here by JavaScript -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Product Detail Modal -->
+        <div id="product-modal" class="modal hidden">
+            <div class="modal-content">
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+                <div class="product-detail">
+                    <div class="product-images">
+                        <div class="main-image">
+                            <div class="placeholder-image product-img" id="modal-product-image"></div>
+                        </div>
+                    </div>
+                    <div class="product-info">
+                        <h2 id="modal-product-name"></h2>
+                        <div class="product-rating">
+                            <div class="stars" id="modal-product-rating"></div>
+                            <span id="modal-product-reviews"></span>
+                        </div>
+                        <div class="product-price" id="modal-product-price"></div>
+                        <p id="modal-product-description"></p>
+                        
+                        <div class="product-details">
+                            <div class="detail-section">
+                                <h4>Key Ingredients</h4>
+                                <ul id="modal-product-ingredients"></ul>
+                            </div>
+                            <div class="detail-section">
+                                <h4>How to Use</h4>
+                                <p id="modal-product-usage"></p>
+                            </div>
+                        </div>
+                        
+                        <div class="product-actions">
+                            <div class="quantity-selector">
+                                <button onclick="updateQuantity(-1)">-</button>
+                                <span id="quantity">1</span>
+                                <button onclick="updateQuantity(1)">+</button>
+                            </div>
+                            <button class="btn btn--primary btn--lg" onclick="addToCart()">Add to Cart</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- About Page -->
+        <section id="about" class="page">
+            <div class="container">
+                <div class="about-hero">
+                    <h2>Our Story</h2>
+                    <p class="lead">Founded with a passion for natural beauty, The Chandra Bella Naturals believes that true beauty comes from within and is enhanced by pure, natural ingredients.</p>
+                </div>
+                
+                <div class="about-content">
+                    <div class="about-section">
+                        <h3>Our Mission</h3>
+                        <p>To provide pure, natural beauty products that enhance your inherent radiance while caring for your skin and the environment. We are committed to creating products that are not only effective but also sustainable and ethically sourced.</p>
+                    </div>
+                    
+                    <div class="about-section">
+                        <h3>Our Values</h3>
+                        <div class="values-list">
+                            <div class="value">
+                                <i class="fas fa-leaf"></i>
+                                <div>
+                                    <h4>100% Natural Ingredients</h4>
+                                    <p>We use only the purest botanical extracts and natural ingredients</p>
+                                </div>
+                            </div>
+                            <div class="value">
+                                <i class="fas fa-heart"></i>
+                                <div>
+                                    <h4>Cruelty-Free & Vegan</h4>
+                                    <p>Never tested on animals, always kind to all living beings</p>
+                                </div>
+                            </div>
+                            <div class="value">
+                                <i class="fas fa-recycle"></i>
+                                <div>
+                                    <h4>Sustainable Packaging</h4>
+                                    <p>Eco-friendly packaging that cares for our planet</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Page -->
+        <section id="contact" class="page">
+            <div class="container">
+                <h2 class="page-title">Contact Us</h2>
+                <div class="contact-content">
+                    <div class="contact-info">
+                        <div class="contact-item">
+                            <i class="fas fa-envelope"></i>
+                            <div>
+                                <h4>Email</h4>
+                                <p>hello@chandrabella.com</p>
+                            </div>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-phone"></i>
+                            <div>
+                                <h4>Phone</h4>
+                                <p>+91 98765 43210</p>
+                            </div>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <div>
+                                <h4>Address</h4>
+                                <p>123 Beauty Lane, Mumbai, Maharashtra 400001</p>
+                            </div>
+                        </div>
+                        <div class="social-links">
+                            <h4>Follow Us</h4>
+                            <div class="social-icons">
+                                <a href="#" target="_blank"><i class="fab fa-instagram"></i></a>
+                                <a href="#" target="_blank"><i class="fab fa-facebook"></i></a>
+                                <a href="#" target="_blank"><i class="fab fa-twitter"></i></a>
+                                <a href="#" target="_blank"><i class="fab fa-youtube"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <form class="contact-form">
+                        <div class="form-group">
+                            <label for="name" class="form-label">Full Name</label>
+                            <input type="text" id="name" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" id="email" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="subject" class="form-label">Subject</label>
+                            <input type="text" id="subject" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="message" class="form-label">Message</label>
+                            <textarea id="message" class="form-control" rows="5" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn--primary">Send Message</button>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Shopping Cart Sidebar -->
+    <div id="cart-sidebar" class="cart-sidebar">
+        <div class="cart-header">
+            <h3>Shopping Cart</h3>
+            <button class="cart-close" onclick="toggleCart()">&times;</button>
+        </div>
+        <div class="cart-items" id="cart-items">
+            <!-- Cart items will be loaded here -->
+        </div>
+        <div class="cart-footer">
+            <div class="cart-total">
+                <strong>Total: <span id="cart-total">₹0</span></strong>
+            </div>
+            <button class="btn btn--primary btn--full-width" onclick="checkout()">Checkout</button>
+        </div>
+    </div>
+
+    <!-- Cart Overlay -->
+    <div id="cart-overlay" class="cart-overlay" onclick="toggleCart()"></div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>The Chandra Bella Naturals</h4>
+                    <p>Embrace your natural beauty with our premium collection of natural beauty products.</p>
+                    <div class="social-icons">
+                        <a href="#" target="_blank"><i class="fab fa-instagram"></i></a>
+                        <a href="#" target="_blank"><i class="fab fa-facebook"></i></a>
+                        <a href="#" target="_blank"><i class="fab fa-twitter"></i></a>
+                    </div>
+                </div>
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="#home">Home</a></li>
+                        <li><a href="#shop">Shop</a></li>
+                        <li><a href="#about">About Us</a></li>
+                        <li><a href="#contact">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Customer Care</h4>
+                    <ul>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Return Policy</a></li>
+                        <li><a href="#">Shipping Info</a></li>
+                        <li><a href="#">FAQ</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Newsletter</h4>
+                    <p>Subscribe to get updates on new products and offers</p>
+                    <form class="newsletter-form">
+                        <input type="email" placeholder="Your email">
+                        <button type="submit" class="btn btn--primary">Subscribe</button>
+                    </form>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 The Chandra Bella Naturals. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+</html>
