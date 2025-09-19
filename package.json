@@ -1,0 +1,20 @@
+{
+  "name": "chandra-bella-naturals",
+  "version": "1.0.0",
+  "description": "The Chandra Bella Naturals - Natural Beauty Products Website",
+  "main": "index.html",
+  "scripts": {
+    "start": "python -m http.server 8000",
+    "build": "echo 'Static site - no build needed'"
+  },
+  "keywords": [
+    "beauty",
+    "natural",
+    "cosmetics",
+    "ecommerce",
+    "website"
+  ],
+  "author": "The Chandra Bella Naturals",
+  "license": "MIT",
+  "homepage": "https://arun9557.github.io/chandra-bella-naturals/"
+}
