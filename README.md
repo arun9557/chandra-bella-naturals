@@ -1,73 +1,123 @@
-# The Chandra Bella Naturals Website
+# The Chandra Bella Naturals
 
-A beautiful e-commerce website for natural beauty products.
+![The Chandra Bella Naturals Logo](public/images/logo.png)
 
-## 🌟 Features
-- 📱 Responsive design
+A modern, responsive e-commerce website for The Chandra Bella Naturals, featuring natural beauty products with a focus on user experience and performance.
+
+## 🚀 Features
+
+- �️ Product catalog with categories and filtering
 - 🛒 Shopping cart functionality
-- 🔍 Product search and filtering
-- 📧 Contact forms with validation
-- 🌙 Dark/Light mode support
-- ⭐ Product reviews and ratings
-- 🎨 Modern UI with animations
+- � Fully responsive design
+- ⚡ Optimized for performance
+- 🔍 SEO-friendly structure
+- 📝 Contact form
+- 📱 Mobile-first approach
+- � Modern UI with smooth animations
 
-## 🛍️ Product Categories
-- **Face**: Foundation, Face Masks, Serums
-- **Lips**: Lip Balm, Liquid Lipstick
-- **Skincare**: Toners, Serums
-- **Hair**: Hair Masks, Growth Serums
-- **Body**: Body Butter, Scrubs
+## �️ Tech Stack
 
-## 🚀 Technologies Used
-- HTML5
-- CSS3 (Custom properties, Grid, Flexbox)
-- Vanilla JavaScript
-- Font Awesome icons
-- Responsive design principles
+- **Frontend**: HTML5, CSS3, JavaScript (ES6+)
+- **Build Tool**: Vite
+- **CSS**: CSS Variables, Flexbox, Grid, CSS Modules
+- **JavaScript**: ES6+ Modules, Fetch API
+- **Icons**: Font Awesome
+- **Fonts**: Google Fonts (Poppins, Playfair Display)
 
-## 🌐 Live Demo
-Website is deployed on multiple platforms:
-- **GitHub Pages**: https://arun9557.github.io/chandra-bella-naturals/
-- **Vercel**: https://chandra-bella-naturals.vercel.app/
+## 📦 Prerequisites
 
-## 💻 Local Development
-1. Clone this repository:
+- Node.js (v14+)
+- npm (v6+) or Yarn (v1.22+)
+- Git
+
+## � Getting Started
+
+1. **Clone the repository**
    ```bash
    git clone https://github.com/arun9557/chandra-bella-naturals.git
    cd chandra-bella-naturals
    ```
-2. Open `index.html` in a web browser
-3. Or run a local server: 
+
+2. **Install dependencies**
    ```bash
-   python -m http.server 8000
-   # Then visit http://localhost:8000
+   npm install
+   # or
+   yarn
    ```
 
-## 📁 File Structure
+3. **Start the development server**
+   ```bash
+   npm run dev
+   # or
+   yarn dev
+   ```
+   Open [https://localhost:3000](https://localhost:3000) in your browser.
+
+4. **Build for production**
+   ```bash
+   npm run build
+   # or
+   yarn build
+   ```
+   The production-ready files will be in the `dist` directory.
+
+## 📁 Project Structure
+
 ```
-├── index.html          # Main HTML file
-├── app.js             # JavaScript functionality
-├── style.css          # CSS styling
-├── script.py          # Python data generation script
-├── README.md          # Project documentation
-├── package.json       # Node.js package configuration
-├── vercel.json        # Vercel deployment configuration
-└── Whimsical Purple Beauty Brand Logo with Gray 11.png # Brand logo
+chandra-bella-naturals/
+├── public/                  # Static files
+│   ├── images/              # Images and icons
+│   └── fonts/               # Custom fonts
+├── src/                     # Source files
+│   ├── css/                 # CSS files
+│   │   ├── components/      # Component styles
+│   │   ├── pages/           # Page-specific styles
+│   │   ├── main.css         # Main styles
+│   │   └── variables.css    # CSS variables
+│   ├── js/                  # JavaScript files
+│   │   ├── components/      # UI components
+│   │   ├── modules/         # Application modules
+│   │   └── app.js           # Main application file
+│   └── index.html           # Main HTML file
+├── .gitignore              # Git ignore file
+├── package.json            # Project configuration
+├── README.md               # This file
+└── vite.config.js          # Vite configuration
 ```
 
-## 🎨 Brand Identity
-- **Colors**: Purple (#8B5E83), Lavender (#E6E6FA), Gray (#808080)
-- **Typography**: Modern, clean fonts
-- **Style**: Natural, elegant, professional
+## 🧪 Testing
 
-## 📞 Contact Information
-- **Website**: The Chandra Bella Naturals
-- **Email**: hello@chandrabella.com
-- **Phone**: +91 98765 43210
-- **Address**: 123 Beauty Lane, Mumbai, Maharashtra 400001
+To run the linter:
+```bash
+npm run lint
+# or
+yarn lint
+```
+
+## 🛠️ Code Style
+
+This project uses:
+- ESLint for JavaScript linting
+- Prettier for code formatting
 
 ## 🤝 Contributing
-This is a commercial website project. For any suggestions or improvements, please contact the team.
+
+1. Fork the project
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🙏 Acknowledgments
+
+- [Font Awesome](https://fontawesome.com/)
+- [Google Fonts](https://fonts.google.com/)
+- [Vite](https://vitejs.dev/)
 
 ---
-**Made with 💜 for natural beauty enthusiasts**
+
+Made with ❤️ by The Chandra Bella Naturals Team
