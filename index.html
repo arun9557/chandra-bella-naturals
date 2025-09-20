@@ -23,8 +23,34 @@
     <meta property="twitter:description" content="Premium natural beauty products crafted with love. 100% natural ingredients, cruelty-free, sustainable packaging.">
     <meta property="twitter:image" content="./Whimsical Purple Beauty Brand Logo with Gray 11.png">
     
-    <link rel="stylesheet" href="./style.css">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" onerror="this.onerror=null;this.href='https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css';">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- Inline Critical Styles -->
+    <style>
+        /* Ensure website works even if external CSS fails */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            line-height: 1.6 !important;
+            color: #333 !important;
+        }
+        
+        .container {
+            max-width: 1200px !important;
+            margin: 0 auto !important;
+            padding: 0 20px !important;
+        }
+        
+        .header {
+            background: white !important;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1) !important;
+            position: sticky !important;
+            top: 0 !important;
+            z-index: 1000 !important;
+        }
+    </style>
 </head>
 <body>
     <!-- Header -->
@@ -165,10 +191,38 @@
                     <div class="newsletter-content">
                         <h3>Stay Beautiful with Our Updates</h3>
                         <p>Get exclusive offers, beauty tips, and new product launches</p>
-                        <form class="newsletter-form">
+                        <form class="newsletter-form" onsubmit="subscribeNewsletter(event)">
                             <input type="email" placeholder="Enter your email address" required>
                             <button type="submit" class="btn btn--primary">Subscribe</button>
                         </form>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Delivery & Payment Info -->
+            <div class="info-section">
+                <div class="container">
+                    <div class="info-grid">
+                        <div class="info-card">
+                            <i class="fas fa-shipping-fast"></i>
+                            <h4>Free Delivery</h4>
+                            <p>Free delivery on orders above ₹500 across India</p>
+                        </div>
+                        <div class="info-card">
+                            <i class="fas fa-money-bill-wave"></i>
+                            <h4>Cash on Delivery</h4>
+                            <p>Pay when you receive your order at your doorstep</p>
+                        </div>
+                        <div class="info-card">
+                            <i class="fas fa-undo"></i>
+                            <h4>Easy Returns</h4>
+                            <p>7-day return policy for unused products</p>
+                        </div>
+                        <div class="info-card">
+                            <i class="fas fa-headset"></i>
+                            <h4>24/7 Support</h4>
+                            <p>Customer support via WhatsApp anytime</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -311,7 +365,7 @@
                         <div class="contact-item">
                             <i class="fas fa-phone"></i>
                             <div>
-                                <h4>Phone</h4>
+                                <h4>Phone & WhatsApp</h4>
                                 <p>+91 98765 43210</p>
                             </div>
                         </div>
@@ -333,7 +387,7 @@
                         </div>
                     </div>
                     
-                    <form class="contact-form">
+                    <form class="contact-form" onsubmit="submitContactForm(event)">
                         <div class="form-group">
                             <label for="name" class="form-label">Full Name</label>
                             <input type="text" id="name" class="form-control" required>
@@ -350,12 +404,17 @@
                             <label for="message" class="form-label">Message</label>
                             <textarea id="message" class="form-control" rows="5" required></textarea>
                         </div>
-                        <button type="submit" class="btn btn--primary">Send Message</button>
+                        <button type="submit" class="btn btn--primary">Send Message via WhatsApp</button>
                     </form>
                 </div>
             </div>
         </section>
     </main>
+
+    <!-- WhatsApp Floating Button -->
+    <div id="whatsapp-float" onclick="openWhatsApp()" title="Chat with us on WhatsApp">
+        <i class="fab fa-whatsapp"></i>
+    </div>
 
     <!-- Shopping Cart Sidebar -->
     <div id="cart-sidebar" class="cart-sidebar">
@@ -423,22 +482,468 @@
         </div>
     </footer>
 
-    <script src="./app.js" onerror="console.error('JavaScript failed to load'); document.body.style.backgroundColor='#fcfcf9'; document.body.style.fontFamily='Arial, sans-serif';"></script>
+    <script src="app.js"></script>
     <script>
-        // Fallback styles if CSS doesn't load
-        window.addEventListener('load', function() {
-            const testElement = document.createElement('div');
-            testElement.style.cssText = 'display: var(--color-primary, none)';
-            document.body.appendChild(testElement);
-            const computed = window.getComputedStyle(testElement).display;
-            if (computed === 'none') {
-                // CSS variables not working, apply basic fallback styles
-                document.body.style.backgroundColor = '#fcfcf9';
-                document.body.style.fontFamily = 'Arial, sans-serif';
-                document.body.style.color = '#1f2121';
+        // Ensure the website works properly
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Chandra Bella Naturals website loaded successfully!');
+            
+            // Initialize cart if empty
+            if (!localStorage.getItem('cart')) {
+                localStorage.setItem('cart', JSON.stringify([]));
             }
-            document.body.removeChild(testElement);
+            
+            // Update cart count
+            updateCartDisplay();
+            
+            // Load featured products if function exists
+            if (typeof loadFeaturedProducts === 'function') {
+                loadFeaturedProducts();
+            }
+            
+            // Add some sample products if none exist
+            if (!document.getElementById('featured-products').children.length) {
+                addSampleProducts();
+            }
+            
+            // Also add products to shop page
+            if (!document.getElementById('all-products').children.length) {
+                addAllProducts();
+            }
         });
+        
+        function addSampleProducts() {
+            const featuredContainer = document.getElementById('featured-products');
+            const sampleProducts = [
+                {
+                    name: 'Natural Glow Foundation',
+                    price: '₹899',
+                    rating: '⭐⭐⭐⭐⭐ (4.8)',
+                    description: 'Natural coverage foundation with SPF 30',
+                    category: 'face'
+                },
+                {
+                    name: 'Organic Lip Balm',
+                    price: '₹299', 
+                    rating: '⭐⭐⭐⭐⭐ (4.6)',
+                    description: 'Nourishing lip balm with natural tint',
+                    category: 'lips'
+                },
+                {
+                    name: 'Rose Toner',
+                    price: '₹499',
+                    rating: '⭐⭐⭐⭐⭐ (4.9)',
+                    description: 'Hydrating toner with rose water',
+                    category: 'skincare'
+                }
+            ];
+            
+            sampleProducts.forEach((product, index) => {
+                const productCard = document.createElement('div');
+                productCard.className = 'product-card';
+                productCard.innerHTML = `
+                    <div class="product-image">
+                        <div style="background: linear-gradient(45deg, #f0f8ff, #e6f3ff); height: 200px; display: flex; align-items: center; justify-content: center; border-radius: 8px; color: #666; margin-bottom: 1rem;">
+                            🌿 ${product.name}
+                        </div>
+                    </div>
+                    <h3 style="margin: 0.5rem 0; color: #333;">${product.name}</h3>
+                    <p style="color: #666; font-size: 0.9rem; margin: 0.5rem 0;">${product.description}</p>
+                    <div style="color: #666; margin: 0.5rem 0;">${product.rating}</div>
+                    <div style="font-size: 1.2rem; font-weight: bold; color: #2c7d8d; margin: 0.5rem 0;">${product.price}</div>
+                    <button onclick="addToCartSample('${product.name}', '${product.price}')" style="background: #2c7d8d; color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 6px; cursor: pointer; width: 100%; margin-top: 1rem;">Add to Cart</button>
+                `;
+                featuredContainer.appendChild(productCard);
+            });
+        }
+        
+        function addAllProducts() {
+            const allProductsContainer = document.getElementById('all-products');
+            const allProducts = [
+                // Face Products
+                {
+                    name: 'Natural Glow Foundation',
+                    price: '₹899',
+                    rating: '⭐⭐⭐⭐⭐ (4.8)',
+                    description: 'Natural coverage foundation with SPF 30',
+                    category: 'face'
+                },
+                {
+                    name: 'BB Cream Natural',
+                    price: '₹649',
+                    rating: '⭐⭐⭐⭐☆ (4.5)',
+                    description: 'All-in-one beauty balm for natural look',
+                    category: 'face'
+                },
+                {
+                    name: 'Natural Blush',
+                    price: '₹549',
+                    rating: '⭐⭐⭐⭐⭐ (4.7)',
+                    description: 'Plant-based blush for healthy glow',
+                    category: 'face'
+                },
+                
+                // Lip Products
+                {
+                    name: 'Organic Lip Balm',
+                    price: '₹299',
+                    rating: '⭐⭐⭐⭐⭐ (4.6)',
+                    description: 'Nourishing lip balm with natural tint',
+                    category: 'lips'
+                },
+                {
+                    name: 'Matte Lipstick',
+                    price: '₹699',
+                    rating: '⭐⭐⭐⭐⭐ (4.8)',
+                    description: 'Long-lasting matte finish lipstick',
+                    category: 'lips'
+                },
+                {
+                    name: 'Lip Scrub',
+                    price: '₹349',
+                    rating: '⭐⭐⭐⭐☆ (4.4)',
+                    description: 'Gentle exfoliating lip scrub',
+                    category: 'lips'
+                },
+                
+                // Skincare Products
+                {
+                    name: 'Rose Toner',
+                    price: '₹499',
+                    rating: '⭐⭐⭐⭐⭐ (4.9)',
+                    description: 'Hydrating toner with rose water',
+                    category: 'skincare'
+                },
+                {
+                    name: 'Vitamin C Serum',
+                    price: '₹1299',
+                    rating: '⭐⭐⭐⭐⭐ (4.7)',
+                    description: 'Brightening serum with 20% Vitamin C',
+                    category: 'skincare'
+                },
+                {
+                    name: 'Face Cleanser',
+                    price: '₹399',
+                    rating: '⭐⭐⭐⭐⭐ (4.6)',
+                    description: 'Gentle foam cleanser for all skin types',
+                    category: 'skincare'
+                },
+                
+                // Hair Products
+                {
+                    name: 'Argan Hair Oil',
+                    price: '₹799',
+                    rating: '⭐⭐⭐⭐⭐ (4.8)',
+                    description: 'Pure Moroccan argan oil for hair',
+                    category: 'hair'
+                },
+                {
+                    name: 'Natural Shampoo',
+                    price: '₹599',
+                    rating: '⭐⭐⭐⭐☆ (4.5)',
+                    description: 'Sulfate-free natural shampoo',
+                    category: 'hair'
+                },
+                {
+                    name: 'Hair Mask',
+                    price: '₹649',
+                    rating: '⭐⭐⭐⭐⭐ (4.7)',
+                    description: 'Deep conditioning hair mask',
+                    category: 'hair'
+                },
+                
+                // Body Products
+                {
+                    name: 'Body Butter',
+                    price: '₹449',
+                    rating: '⭐⭐⭐⭐⭐ (4.8)',
+                    description: 'Rich moisturizing body butter',
+                    category: 'body'
+                },
+                {
+                    name: 'Body Scrub',
+                    price: '₹599',
+                    rating: '⭐⭐⭐⭐☆ (4.5)',
+                    description: 'Exfoliating body scrub with sea salt',
+                    category: 'body'
+                },
+                {
+                    name: 'Body Lotion',
+                    price: '₹399',
+                    rating: '⭐⭐⭐⭐⭐ (4.6)',
+                    description: 'Daily moisturizing body lotion',
+                    category: 'body'
+                }
+            ];
+            
+            allProducts.forEach((product, index) => {
+                const productCard = document.createElement('div');
+                productCard.className = 'product-card';
+                productCard.setAttribute('data-category', product.category);
+                productCard.innerHTML = `
+                    <div class="product-image">
+                        <div style="background: linear-gradient(45deg, #f0f8ff, #e6f3ff); height: 200px; display: flex; align-items: center; justify-content: center; border-radius: 8px; color: #666; margin-bottom: 1rem;">
+                            🌿 ${product.name}
+                        </div>
+                    </div>
+                    <h3 style="margin: 0.5rem 0; color: #333;">${product.name}</h3>
+                    <p style="color: #666; font-size: 0.9rem; margin: 0.5rem 0;">${product.description}</p>
+                    <div style="color: #666; margin: 0.5rem 0;">${product.rating}</div>
+                    <div style="font-size: 1.2rem; font-weight: bold; color: #2c7d8d; margin: 0.5rem 0;">${product.price}</div>
+                    <button onclick="addToCartSample('${product.name}', '${product.price}')" style="background: #2c7d8d; color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 6px; cursor: pointer; width: 100%; margin-top: 1rem;">Add to Cart</button>
+                `;
+                allProductsContainer.appendChild(productCard);
+            });
+            
+            // Add filter functionality
+            setupFilters();
+        }
+        
+        function addToCartSample(name, price) {
+            const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+            const existingItem = cart.find(item => item.name === name);
+            
+            if (existingItem) {
+                existingItem.quantity += 1;
+            } else {
+                cart.push({ name, price, quantity: 1, id: Date.now() });
+            }
+            
+            localStorage.setItem('cart', JSON.stringify(cart));
+            updateCartDisplay();
+            
+            // Show success message
+            alert(`${name} added to cart!`);
+        }
+        
+        function updateCartDisplay() {
+            const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+            const cartCount = cart.reduce((total, item) => total + item.quantity, 0);
+            const countElement = document.getElementById('cart-count');
+            if (countElement) {
+                countElement.textContent = cartCount;
+            }
+        }
+        
+        function toggleCart() {
+            const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+            let cartHTML = '<h3>Your Cart</h3>';
+            
+            if (cart.length === 0) {
+                cartHTML += '<p>Your cart is empty</p>';
+            } else {
+                let total = 0;
+                cart.forEach(item => {
+                    const price = parseInt(item.price.replace('₹', ''));
+                    total += price * item.quantity;
+                    cartHTML += `
+                        <div style="border-bottom: 1px solid #eee; padding: 1rem 0;">
+                            <h4>${item.name}</h4>
+                            <p>Price: ${item.price} x ${item.quantity}</p>
+                            <button onclick="removeFromCart(${item.id})" style="background: #dc3545; color: white; border: none; padding: 0.5rem; border-radius: 4px;">Remove</button>
+                        </div>
+                    `;
+                });
+                cartHTML += `<div style="margin-top: 1rem; font-weight: bold;">Total: ₹${total}</div>`;
+                cartHTML += `<button onclick="checkout()" style="background: #28a745; color: white; border: none; padding: 1rem; border-radius: 6px; width: 100%; margin-top: 1rem;">Checkout</button>`;
+            }
+            
+            alert(cartHTML.replace(/<[^>]*>/g, '\n').replace(/&[^;]*;/g, ''));
+        }
+        
+        function removeFromCart(id) {
+            let cart = JSON.parse(localStorage.getItem('cart') || '[]');
+            cart = cart.filter(item => item.id !== id);
+            localStorage.setItem('cart', JSON.stringify(cart));
+            updateCartDisplay();
+        }
+        
+        function checkout() {
+            const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+            if (cart.length === 0) {
+                alert('Your cart is empty!');
+                return;
+            }
+            
+            let orderMessage = 'Hello! I want to place an order from Chandra Bella Naturals:\n\n';
+            let total = 0;
+            
+            cart.forEach(item => {
+                const price = parseInt(item.price.replace('₹', ''));
+                total += price * item.quantity;
+                orderMessage += `• ${item.name} - ${item.price} x ${item.quantity}\n`;
+            });
+            
+            orderMessage += `\nTotal Amount: ₹${total}`;
+            orderMessage += '\n\nPlease confirm my order and let me know the delivery details.';
+            
+            // WhatsApp number for Chandra Bella Naturals
+            const whatsappNumber = '918765432109'; // Replace with actual number
+            const whatsappURL = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(orderMessage)}`;
+            
+            // Show order confirmation
+            const confirmOrder = confirm(`Order Summary:
+
+Total: ₹${total}
+
+Click OK to place order via WhatsApp`);
+            
+            if (confirmOrder) {
+                // Open WhatsApp
+                window.open(whatsappURL, '_blank');
+                
+                // Clear cart after order
+                localStorage.setItem('cart', JSON.stringify([]));
+                updateCartDisplay();
+                
+                alert('Order sent via WhatsApp! We will contact you soon.');
+            }
+        }
+        
+        function showCategory(category) {
+            // Hide home page, show shop page
+            document.getElementById('home').classList.remove('active');
+            document.getElementById('shop').classList.add('active');
+            
+            // Load products for the category
+            const categoryFilter = document.getElementById('category-filter');
+            if (categoryFilter) {
+                categoryFilter.value = category;
+            }
+        }
+        
+        function scrollToSection(sectionId) {
+            const element = document.getElementById(sectionId);
+            if (element) {
+                element.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+        
+        // Navigation functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const navLinks = document.querySelectorAll('.nav-link');
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href').replace('#', '');
+                    
+                    // Hide all pages
+                    document.querySelectorAll('.page').forEach(page => {
+                        page.classList.remove('active');
+                    });
+                    
+                    // Show target page
+                    const targetPage = document.getElementById(targetId);
+                    if (targetPage) {
+                        targetPage.classList.add('active');
+                    }
+                    
+                    // Update active nav link
+                    navLinks.forEach(nl => nl.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+        });
+        
+        function submitContactForm(event) {
+            event.preventDefault();
+            
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const subject = document.getElementById('subject').value;
+            const message = document.getElementById('message').value;
+            
+            const whatsappMessage = `Hello Chandra Bella Naturals!
+
+Contact Form Submission:
+
+Name: ${name}
+Email: ${email}
+Subject: ${subject}
+
+Message:
+${message}
+
+Please get back to me. Thank you!`;
+            
+            const whatsappNumber = '918765432109'; // Replace with actual number
+            const whatsappURL = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(whatsappMessage)}`;
+            
+            window.open(whatsappURL, '_blank');
+            
+            // Reset form
+            document.querySelector('.contact-form').reset();
+            alert('Your message has been sent via WhatsApp! We will get back to you soon.');
+        }
+        
+        function openWhatsApp() {
+            const message = 'Hello Chandra Bella Naturals! I am interested in your natural beauty products. Please provide more information.';
+            const whatsappNumber = '918765432109'; // Replace with actual number
+            const whatsappURL = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
+            window.open(whatsappURL, '_blank');
+        }
+        
+        function subscribeNewsletter(event) {
+            event.preventDefault();
+            const email = event.target.querySelector('input[type="email"]').value;
+            
+            // Here you would typically send to a server
+            // For now, we'll show a success message
+            alert(`Thank you for subscribing with ${email}! You'll receive beauty tips and exclusive offers.`);
+            
+            event.target.reset();
+        }
+        
+        function setupFilters() {
+            const categoryFilter = document.getElementById('category-filter');
+            const priceFilter = document.getElementById('price-filter');
+            const ratingFilter = document.getElementById('rating-filter');
+            
+            [categoryFilter, priceFilter, ratingFilter].forEach(filter => {
+                if (filter) {
+                    filter.addEventListener('change', applyFilters);
+                }
+            });
+        }
+        
+        function applyFilters() {
+            const categoryFilter = document.getElementById('category-filter').value;
+            const priceFilter = document.getElementById('price-filter').value;
+            const ratingFilter = document.getElementById('rating-filter').value;
+            
+            const productCards = document.querySelectorAll('#all-products .product-card');
+            
+            productCards.forEach(card => {
+                let showCard = true;
+                
+                // Category filter
+                if (categoryFilter && card.getAttribute('data-category') !== categoryFilter) {
+                    showCard = false;
+                }
+                
+                // Price filter (simplified)
+                if (priceFilter) {
+                    const priceText = card.querySelector('div[style*="font-size: 1.2rem"]').textContent;
+                    const price = parseInt(priceText.replace('₹', ''));
+                    
+                    if (priceFilter === '0-500' && price > 500) showCard = false;
+                    if (priceFilter === '500-800' && (price < 500 || price > 800)) showCard = false;
+                    if (priceFilter === '800-1200' && (price < 800 || price > 1200)) showCard = false;
+                    if (priceFilter === '1200+' && price < 1200) showCard = false;
+                }
+                
+                // Rating filter (simplified)
+                if (ratingFilter) {
+                    const ratingText = card.querySelector('div[style*="color: #666"]').textContent;
+                    const rating = parseFloat(ratingText.split('(')[1]);
+                    
+                    if (ratingFilter === '4.5+' && rating < 4.5) showCard = false;
+                    if (ratingFilter === '4+' && rating < 4.0) showCard = false;
+                }
+                
+                card.style.display = showCard ? 'block' : 'none';
+            });
+        }
     </script>
 </body>
 </html>
