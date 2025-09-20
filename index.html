@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>The Chandra Bella Naturals - Embrace Your Natural Beauty</title>
     <meta name="description" content="Premium natural beauty products crafted with love. 100% natural ingredients, cruelty-free, sustainable packaging. Shop face care, skincare, lip care, hair care & body care products.">
@@ -22,8 +23,8 @@
     <meta property="twitter:description" content="Premium natural beauty products crafted with love. 100% natural ingredients, cruelty-free, sustainable packaging.">
     <meta property="twitter:image" content="./Whimsical Purple Beauty Brand Logo with Gray 11.png">
     
-    <link rel="stylesheet" href="style.css">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="./style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" onerror="this.onerror=null;this.href='https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css';">
 </head>
 <body>
     <!-- Header -->
@@ -422,6 +423,22 @@
         </div>
     </footer>
 
-    <script src="app.js"></script>
+    <script src="./app.js" onerror="console.error('JavaScript failed to load'); document.body.style.backgroundColor='#fcfcf9'; document.body.style.fontFamily='Arial, sans-serif';"></script>
+    <script>
+        // Fallback styles if CSS doesn't load
+        window.addEventListener('load', function() {
+            const testElement = document.createElement('div');
+            testElement.style.cssText = 'display: var(--color-primary, none)';
+            document.body.appendChild(testElement);
+            const computed = window.getComputedStyle(testElement).display;
+            if (computed === 'none') {
+                // CSS variables not working, apply basic fallback styles
+                document.body.style.backgroundColor = '#fcfcf9';
+                document.body.style.fontFamily = 'Arial, sans-serif';
+                document.body.style.color = '#1f2121';
+            }
+            document.body.removeChild(testElement);
+        });
+    </script>
 </body>
 </html>

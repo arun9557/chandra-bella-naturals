@@ -1,3 +1,17 @@
+/* Critical Base Styles - Loaded First */
+* {
+  box-sizing: border-box !important;
+}
+
+body {
+  margin: 0 !important;
+  padding: 0 !important;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
+  line-height: 1.5 !important;
+  color: #1f2121 !important;
+  background-color: #fcfcf9 !important;
+}
+
 :root {
   /* Primitive Color Tokens */
   --color-white: rgba(255, 255, 255, 1);
@@ -81,9 +95,9 @@
 
   /* Typography */
   --font-family-base: "Inter", -apple-system,
-    BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
   --font-family-mono: "Berkeley Mono", ui-monospace, SFMono-Regular, Menlo,
-    Monaco, Consolas, monospace;
+    Monaco, Consolas, "Courier New", monospace !important;
   --font-size-xs: 11px;
   --font-size-sm: 12px;
   --font-size-base: 14px;
