@@ -5,22 +5,28 @@
 
 /* Base Styles & Variables */
 :root {
-    /* Colors - Based on Velvety Beauty Theme */
-    --primary-color: #A06A9A; /* Purple - Primary action color */
-    --primary-dark: #8A4F84;
-    --primary-light: #C490BE;
-    --secondary-color: #F5D6C6; /* Soft peach/pink */
-    --accent-color: #E8B4A2; /* Coral accent */
-    --text-color: #2D2D2D; /* Near black for text */
-    --text-light: #5A5A5A;
-    --text-lighter: #8A8A8A;
-    --bg-light: #FDF7F3; /* Very light peach background */
+    /* Colors - Enhanced Velvety Beauty Theme */
+    --primary-color: #B75EA1; /* Brighter purple - Primary action color */
+    --primary-dark: #9C4189;
+    --primary-light: #D687C3;
+    --primary-gradient: linear-gradient(135deg, #B75EA1, #D687C3);
+    --secondary-color: #FFD0BE; /* Brighter peach/pink */
+    --secondary-dark: #F5B6A4;
+    --secondary-light: #FFF0EA;
+    --secondary-gradient: linear-gradient(135deg, #FFD0BE, #FFF0EA);
+    --accent-color: #FF9A8B; /* Vibrant coral accent */
+    --accent-dark: #FF7E6B;
+    --text-color: #1A1A1A; /* Deeper black for text */
+    --text-light: #4D4D4D;
+    --text-lighter: #777777;
+    --bg-light: #FEF9F6; /* Very light peach background */
     --bg-lighter: #FFFFFF;
-    --border-color: #E8D8D0;
-    --success-color: #7FB77E; /* Softer green */
-    --error-color: #E57373; /* Softer red */
-    --warning-color: #FFB74D; /* Softer orange */
-    --info-color: #64B5F6; /* Softer blue */
+    --bg-gradient: linear-gradient(135deg, #FEF9F6, #FFFFFF);
+    --border-color: #F0E0D6;
+    --success-color: #6ECB63; /* Brighter green */
+    --error-color: #FF6B6B; /* Brighter red */
+    --warning-color: #FFAF4D; /* Brighter orange */
+    --info-color: #5AAFFF; /* Brighter blue */
     
     /* Typography */
     --font-primary: 'Poppins', sans-serif;
@@ -156,53 +162,61 @@ button {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    padding: 0.875rem 2rem;
-    border-radius: var(--border-radius-lg);
+    padding: 0.85rem 1.75rem;
+    border-radius: 2rem;
     font-weight: 600;
-    font-size: 1rem;
+    font-size: 0.95rem;
+    letter-spacing: 0.8px;
     text-align: center;
-    transition: all 0.3s ease;
-    border: 2px solid transparent;
     cursor: pointer;
-    letter-spacing: 0.02em;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
     gap: 0.5rem;
+    text-decoration: none;
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
 }
 
 .btn-primary {
-    background-color: var(--primary-color);
+    background: var(--primary-gradient);
     color: white;
-    box-shadow: 0 4px 10px rgba(160, 106, 154, 0.3);
+    border: none;
+    box-shadow: 0 4px 15px rgba(183, 94, 161, 0.3);
 }
 
 .btn-primary:hover {
-    background-color: var(--primary-dark);
     transform: translateY(-3px);
-    box-shadow: 0 6px 15px rgba(160, 106, 154, 0.4);
+    box-shadow: 0 8px 20px rgba(183, 94, 161, 0.4);
+}
+
+.btn-primary:active {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(183, 94, 161, 0.3);
 }
 
 .btn-secondary {
-    background-color: var(--secondary-color);
+    background: var(--secondary-gradient);
     color: var(--primary-dark);
-    box-shadow: 0 4px 10px rgba(245, 214, 198, 0.4);
+    border: none;
+    box-shadow: 0 4px 15px rgba(255, 208, 190, 0.4);
 }
 
 .btn-secondary:hover {
-    background-color: #F0C6B6;
     transform: translateY(-3px);
-    box-shadow: 0 6px 15px rgba(245, 214, 198, 0.5);
+    box-shadow: 0 8px 20px rgba(255, 208, 190, 0.5);
 }
 
 .btn-outline {
     background-color: transparent;
-    border: 2px solid var(--primary-color);
     color: var(--primary-color);
+    border: 2px solid var(--primary-color);
+    box-shadow: 0 4px 10px rgba(183, 94, 161, 0.1);
 }
 
 .btn-outline:hover {
     background-color: var(--primary-color);
     color: white;
-    transform: translateY(-3px);
-    box-shadow: var(--shadow);
+    box-shadow: 0 6px 15px rgba(183, 94, 161, 0.2);
 }
 
 /* Header */
@@ -213,9 +227,17 @@ button {
     width: 100%;
     background-color: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(10px);
-    box-shadow: var(--shadow-sm);
+    -webkit-backdrop-filter: blur(10px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
     z-index: 1000;
-    padding: 1.25rem 0;
+    padding: 1rem 0;
+    transition: all 0.3s ease;
+}
+
+.header.scrolled {
+    padding: 0.75rem 0;
+    background-color: rgba(255, 255, 255, 0.98);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
 }
 
 .header-content {
@@ -286,16 +308,39 @@ button {
 
 /* Hero Banner */
 .hero-banner {
-    background: linear-gradient(to right, rgba(160, 106, 154, 0.8), rgba(245, 214, 198, 0.8)), url('/images/hero-bg.jpg') center/cover no-repeat;
-    height: 90vh;
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+    min-height: 85vh;
     display: flex;
     align-items: center;
-    text-align: left;
+    justify-content: center;
     color: white;
-    margin-top: 0; /* Remove margin as we'll use padding instead */
-    padding-top: 100px; /* Account for fixed header */
+    text-align: center;
+    margin-top: 5rem;
+    padding: 3rem 1rem;
     position: relative;
     overflow: hidden;
+    box-shadow: 0 5px 25px rgba(183, 94, 161, 0.2);
+}
+
+.hero-banner::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='rgba(255,255,255,.075)' fill-rule='evenodd'/%3E%3C/svg%3E");
+    opacity: 0.5;
+    animation: backgroundMove 30s linear infinite;
+}
+
+@keyframes backgroundMove {
+    0% {
+        background-position: 0 0;
+    }
+    100% {
+        background-position: 100px 100px;
+    }
 }
 
 .hero-banner::before {
@@ -336,34 +381,39 @@ button {
 
 /* Featured Products */
 .featured-products {
-    padding: var(--spacing-xl) 0;
+    padding: 5rem 0;
     background-color: var(--bg-light);
+    position: relative;
 }
 
 .product-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: var(--spacing-md);
-    margin-top: var(--spacing-md);
+    gap: var(--spacing-lg);
+    margin-top: var(--spacing-lg);
 }
 
 .product-card {
     background-color: var(--bg-lighter);
-    border-radius: var(--border-radius-lg);
+    border-radius: 1.25rem;
     overflow: hidden;
-    box-shadow: var(--shadow-sm);
-    transition: all 0.4s ease;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     position: relative;
 }
 
 .product-card:hover {
-    transform: translateY(-8px);
-    box-shadow: var(--shadow-md);
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 15px 30px rgba(183, 94, 161, 0.15);
+}
+
+.product-card:hover .product-image {
+    transform: scale(1.05);
 }
 
 .product-image {
     position: relative;
-    height: 280px;
+    height: 250px;
     overflow: hidden;
 }
 
@@ -371,11 +421,21 @@ button {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transition: transform 0.6s ease;
+    transition: transform 0.5s ease;
 }
 
-.product-card:hover .product-image img {
-    transform: scale(1.08);
+.product-badge {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: var(--primary-gradient);
+    color: white;
+    padding: 0.4rem 0.8rem;
+    border-radius: 2rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    z-index: 2;
+    box-shadow: 0 4px 10px rgba(183, 94, 161, 0.3);
 }
 
 .product-badge {
