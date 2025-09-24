@@ -1,53 +1,66 @@
-# The Chandra Bella Naturals
+# Chandra Bella Naturals
 
-![The Chandra Bella Naturals Logo](public/images/logo.png)
+![Chandra Bella Naturals Logo](Whimsical%20Purple%20Beauty%20Brand%20Logo%20with%20Gray%2011.png)
 
-A modern, responsive e-commerce website for The Chandra Bella Naturals, featuring natural beauty products with a focus on user experience and performance.
+A modern, responsive e-commerce website for Chandra Bella Naturals, featuring natural beauty products with a focus on user experience and elegant design.
 
 ## 🚀 Features
 
-- �️ Product catalog with categories and filtering
+- 🛍️ Product catalog with categories and filtering
 - 🛒 Shopping cart functionality
-- � Fully responsive design
+- 📱 Fully responsive design
 - ⚡ Optimized for performance
 - 🔍 SEO-friendly structure
 - 📝 Contact form
-- 📱 Mobile-first approach
-- � Modern UI with smooth animations
+- 🎨 Beautiful UI with modern aesthetics
+- ✨ Smooth animations and transitions
 
-## �️ Tech Stack
+## 🛠️ Tech Stack
 
 - **Frontend**: HTML5, CSS3, JavaScript (ES6+)
 - **Build Tool**: Vite
-- **CSS**: CSS Variables, Flexbox, Grid, CSS Modules
+- **CSS**: Custom variables, Flexbox, Grid
 - **JavaScript**: ES6+ Modules, Fetch API
 - **Icons**: Font Awesome
 - **Fonts**: Google Fonts (Poppins, Playfair Display)
+- **Deployment**: Vercel
 
 ## 📦 Prerequisites
 
 - Node.js (v14+)
 - npm (v6+) or Yarn (v1.22+)
-- Git
 
-## � Getting Started
+## 🚀 Getting Started
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/arun9557/chandra-bella-naturals.git
+   git clone <your-repo-url>
    cd chandra-bella-naturals
    ```
 
 2. **Install dependencies**
    ```bash
    npm install
-   # or
-   yarn
    ```
 
 3. **Start the development server**
    ```bash
    npm run dev
+   ```
+
+4. **Build for production**
+   ```bash
+   npm run build
+   ```
+
+## 🌐 Deployment
+
+This project is configured for easy deployment on Vercel:
+
+1. Push your code to a GitHub repository
+2. Import the project in Vercel dashboard
+3. Vercel will automatically detect the Vite configuration
+4. Your site will be deployed and available at a Vercel URL
    # or
    yarn dev
    ```
