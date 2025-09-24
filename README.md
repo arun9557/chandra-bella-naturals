@@ -61,18 +61,23 @@ This project is configured for easy deployment on Vercel:
 2. Import the project in Vercel dashboard
 3. Vercel will automatically detect the Vite configuration
 4. Your site will be deployed and available at a Vercel URL
-   # or
-   yarn dev
-   ```
-   Open [https://localhost:3000](https://localhost:3000) in your browser.
+## 🌟 Project Structure
 
-4. **Build for production**
-   ```bash
-   npm run build
-   # or
-   yarn build
-   ```
-   The production-ready files will be in the `dist` directory.
+```
+chandra-bella-naturals/
+├── src/               # Source files
+│   ├── css/           # CSS styles
+│   ├── js/            # JavaScript files
+│   │   ├── data/      # Product data
+│   │   └── modules/   # JS modules
+│   └── index.html     # Main HTML file
+├── dist/              # Production build (generated)
+└── vercel.json        # Vercel deployment config
+```
+
+## 📝 License
+
+MIT
 
 ## 📁 Project Structure
 
