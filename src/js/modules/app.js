@@ -125,15 +125,28 @@ async function initializeHomePage(productData) {
             <div class="hero-banner">
                 <div class="hero-background">
                     <div class="hero-overlay"></div>
+                    <div class="floating-particles">
+                        <div class="particle particle-1">✨</div>
+                        <div class="particle particle-2">🌸</div>
+                        <div class="particle particle-3">💜</div>
+                        <div class="particle particle-4">🦋</div>
+                        <div class="particle particle-5">✨</div>
+                        <div class="particle particle-6">🌺</div>
+                    </div>
                 </div>
                 <div class="container">
                     <div class="hero-content">
                         <div class="brand-logo">
-                            <img src="/Whimsical Purple Beauty Brand Logo with Gray 11.png" alt="Chandra Bella Naturals Logo" class="logo-image">
+                            <img src="/Whimsical Purple Beauty Brand Logo with Gray 11.png" alt="The Chandra Bella Naturals Logo" class="logo-image">
                         </div>
-                        <h1 class="hero-title">${productData.brand.name}</h1>
-                        <p class="hero-tagline">${productData.brand.tagline}</p>
-                        <p class="hero-description">Discover the power of nature with our premium collection of natural beauty products. Crafted with love, made for you.</p>
+                        <div class="hero-text-content">
+                            <h1 class="hero-title script-font">Where Beauty Meets Nature</h1>
+                            <p class="hero-tagline script-font">Embrace Your Natural Radiance</p>
+                            <p class="hero-description">Discover the enchanting world of natural beauty with our carefully curated collection. Each product is a testament to nature's finest ingredients, crafted with love and dedication to enhance your inherent beauty.</p>
+                            <div class="hero-quote">
+                                <p class="quote-text script-font">"Beauty begins the moment you decide to be yourself"</p>
+                            </div>
+                        </div>
                         <div class="hero-actions">
                             <a href="#shop" class="btn btn-primary btn-large">Explore Collection</a>
                             <a href="#about" class="btn btn-outline btn-large">Our Story</a>
@@ -213,20 +226,35 @@ async function initializeHomePage(productData) {
         <!-- About Page -->
         <section id="about" class="page">
             <div class="container">
-                <h1 class="section-title">About Us</h1>
+                <div class="about-hero">
+                    <img src="/Whimsical Purple Beauty Brand Logo with Gray 11.png" alt="The Chandra Bella Naturals" class="about-logo">
+                    <h1 class="section-title script-font">Our Beautiful Journey</h1>
+                </div>
                 <div class="about-content">
                     <div class="about-text">
-                        <h2>${productData.brand.name}</h2>
-                        <p>${productData.brand.mission}</p>
-                        <p>${productData.brand.story}</p>
+                        <div class="elegant-quote">
+                            <p class="quote-text script-font">"In every drop of nature's essence, we find the secret to timeless beauty"</p>
+                        </div>
                         
-                        <h3>Our Values</h3>
-                        <ul class="values-list">
-                            ${productData.brand.values.map(value => `<li>${value}</li>`).join('')}
+                        <h2 class="script-font">The Chandra Bella Story</h2>
+                        <p class="elegant-text">${productData.brand.mission}</p>
+                        <p class="elegant-text">${productData.brand.story}</p>
+                        
+                        <div class="founder-message">
+                            <h3 class="script-font">A Message from Our Heart</h3>
+                            <p class="elegant-text">At The Chandra Bella Naturals, we believe that true beauty radiates from within. Our carefully crafted products are more than just cosmetics – they are a celebration of your unique essence, designed to enhance the natural radiance that makes you extraordinary.</p>
+                        </div>
+                        
+                        <h3 class="script-font">Our Sacred Values</h3>
+                        <ul class="values-list elegant-list">
+                            ${productData.brand.values.map(value => `<li class="value-item"><i class="fas fa-leaf"></i> ${value}</li>`).join('')}
                         </ul>
                     </div>
                     <div class="about-image">
-                        <img src="/images/about.jpg" alt="About ${productData.brand.name}">
+                        <div class="image-placeholder">
+                            <i class="fas fa-spa"></i>
+                            <p>Natural Beauty Essence</p>
+                        </div>
                     </div>
                 </div>
             </div>
