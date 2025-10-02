@@ -3,18 +3,78 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Chandra Bella Naturals - Embrace Your Natural Beauty</title>
-    <meta name="description" content="Premium natural beauty products crafted with love. 100% natural ingredients, cruelty-free, sustainable packaging.">
-    <meta name="keywords" content="natural beauty, organic cosmetics, cruelty-free, vegan beauty, sustainable beauty, skincare, makeup, natural ingredients">
-    <meta name="author" content="The Chandra Bella Naturals">
     
-    <!-- Favicon -->
-    <link rel="icon" type="image/png" href="/images/favicon.png">
+    <!-- SEO Meta Tags -->
+    <title>Chandra Bella Naturals - Premium Natural Beauty Products | Cruelty-Free Cosmetics</title>
+    <meta name="description" content="Discover premium natural beauty products at Chandra Bella Naturals. 100% natural ingredients, cruelty-free, vegan cosmetics. Shop skincare, makeup & wellness products online.">
+    <meta name="keywords" content="natural beauty products, organic cosmetics, cruelty-free makeup, vegan beauty, sustainable skincare, natural ingredients, Indian beauty brand, eco-friendly cosmetics">
+    <meta name="author" content="Chandra Bella Naturals">
+    <meta name="robots" content="index, follow">
+    <meta name="language" content="English">
+    <meta name="revisit-after" content="7 days">
     
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="Chandra Bella Naturals - Premium Natural Beauty Products">
+    <meta property="og:description" content="Embrace your natural beauty with our premium, cruelty-free cosmetics made from 100% natural ingredients.">
+    <meta property="og:image" content="/images/og-image.jpg">
+    <meta property="og:url" content="https://chandrabella.com">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Chandra Bella Naturals">
+    <meta property="og:locale" content="en_IN">
     
-    <!-- Google Fonts -->
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Chandra Bella Naturals - Premium Natural Beauty Products">
+    <meta name="twitter:description" content="Embrace your natural beauty with our premium, cruelty-free cosmetics made from 100% natural ingredients.">
+    <meta name="twitter:image" content="/images/twitter-card.jpg">
+    <meta name="twitter:site" content="@chandrabella">
+    
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "Chandra Bella Naturals",
+        "url": "https://chandrabella.com",
+        "logo": "/images/logo.png",
+        "description": "Premium natural beauty products crafted with love. 100% natural ingredients, cruelty-free, sustainable packaging.",
+        "contactPoint": {
+            "@type": "ContactPoint",
+            "telephone": "+91-98765-43210",
+            "contactType": "Customer Service",
+            "availableLanguage": ["English", "Hindi"]
+        },
+        "sameAs": [
+            "https://www.facebook.com/chandrabella",
+            "https://www.instagram.com/chandrabella",
+            "https://www.pinterest.com/chandrabella"
+        ]
+    }
+    </script>
+    
+    <!-- Favicon and Icons -->
+    <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#B75EA1">
+    <meta name="msapplication-TileColor" content="#B75EA1">
+    
+    <!-- Preconnect to external domains for performance -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    
+    <!-- DNS Prefetch for better performance -->
+    <link rel="dns-prefetch" href="//www.google-analytics.com">
+    <link rel="dns-prefetch" href="//www.googletagmanager.com">
+    
+    <!-- Font Awesome with integrity check -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" 
+          integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" 
+          crossorigin="anonymous" referrerpolicy="no-referrer">
+    
+    <!-- Google Fonts with display=swap for better performance -->
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
     
     <!-- Main CSS -->
@@ -86,23 +146,49 @@
                 </nav>
                 
                 <div class="header-actions">
-                    <button class="search-btn">
-                        <i class="fas fa-search"></i>
-                    </button>
-                    <button class="user-btn">
+                    <div class="search-container">
+                        <button class="search-btn" onclick="toggleSearch()" aria-label="Toggle search">
+                            <i class="fas fa-search"></i>
+                        </button>
+                        <div class="search-dropdown" id="searchDropdown">
+                            <div class="search-input-wrapper">
+                                <input type="search" 
+                                       id="headerSearchInput" 
+                                       placeholder="Search products..." 
+                                       aria-label="Search products"
+                                       autocomplete="off">
+                                <button class="search-clear" onclick="clearSearch()" aria-label="Clear search">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                            <div class="search-results" id="headerSearchResults"></div>
+                        </div>
+                    </div>
+                    <button class="user-btn" aria-label="User account">
                         <i class="far fa-user"></i>
                     </button>
-                    <button class="cart-btn" onclick="toggleCart()">
+                    <button class="cart-btn" onclick="toggleCart()" aria-label="Shopping cart">
                         <i class="fas fa-shopping-cart"></i>
-                        <span class="cart-count">0</span>
+                        <span class="cart-count" aria-label="Items in cart">0</span>
                     </button>
                 </div>
             </div>
         </div>
     </header>
 
+    <!-- Loading Spinner -->
+    <div id="app-loader" class="app-loader" style="display: none;">
+        <div class="loader-content">
+            <div class="loader-spinner"></div>
+            <p class="loader-message">Loading...</p>
+        </div>
+    </div>
+
+    <!-- Skip to main content for accessibility -->
+    <a href="#app" class="skip-link">Skip to main content</a>
+
     <!-- Main Content -->
-    <main id="app">
+    <main id="app" role="main">
         <!-- Content will be dynamically loaded here by JavaScript -->
     </main>
 
@@ -185,31 +271,143 @@
     <script src="/js/main.js" type="module"></script>
     
     <script>
-        // Global functions
+        // Global functions with improved accessibility and UX
         function toggleMobileMenu() {
             const nav = document.querySelector('.main-nav');
-            if (nav) {
-                nav.classList.toggle('active');
+            const button = document.querySelector('.mobile-menu-btn');
+            
+            if (nav && button) {
+                const isOpen = nav.classList.toggle('active');
+                button.setAttribute('aria-expanded', isOpen);
+                button.setAttribute('aria-label', isOpen ? 'Close menu' : 'Open menu');
+                
+                // Prevent body scroll when menu is open
+                document.body.style.overflow = isOpen ? 'hidden' : '';
             }
         }
         
         function toggleCart() {
             const cart = document.getElementById('cartSidebar');
             if (cart) {
-                cart.classList.toggle('active');
+                const isOpen = cart.classList.toggle('active');
+                cart.setAttribute('aria-hidden', !isOpen);
+                
+                // Focus management for accessibility
+                if (isOpen) {
+                    const firstFocusable = cart.querySelector('button, input, select, textarea, a[href]');
+                    if (firstFocusable) firstFocusable.focus();
+                }
+                
+                // Prevent body scroll when cart is open
+                document.body.style.overflow = isOpen ? 'hidden' : '';
             }
         }
         
+        function toggleSearch() {
+            const dropdown = document.getElementById('searchDropdown');
+            const input = document.getElementById('headerSearchInput');
+            
+            if (dropdown && input) {
+                const isOpen = dropdown.classList.toggle('active');
+                dropdown.setAttribute('aria-hidden', !isOpen);
+                
+                if (isOpen) {
+                    input.focus();
+                } else {
+                    input.value = '';
+                    clearSearchResults();
+                }
+            }
+        }
+        
+        function clearSearch() {
+            const input = document.getElementById('headerSearchInput');
+            const results = document.getElementById('headerSearchResults');
+            
+            if (input) input.value = '';
+            if (results) results.innerHTML = '';
+        }
+        
+        function clearSearchResults() {
+            const results = document.getElementById('headerSearchResults');
+            if (results) results.innerHTML = '';
+        }
+        
         function openWhatsApp() {
-            window.open('https://wa.me/919999999999', '_blank');
+            window.open('https://wa.me/919999999999?text=Hi! I\'m interested in your natural beauty products.', '_blank');
         }
         
         function subscribeNewsletter(event) {
             event.preventDefault();
-            const email = event.target.querySelector('input[type="email"]').value;
-            alert(`Thank you for subscribing with ${email}!`);
-            event.target.reset();
+            const form = event.target;
+            const email = form.querySelector('input[type="email"]').value;
+            const button = form.querySelector('button[type="submit"]');
+            
+            // Show loading state
+            button.disabled = true;
+            button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Subscribing...';
+            
+            // Simulate API call
+            setTimeout(() => {
+                // Show success message
+                if (window.showNotification) {
+                    window.showNotification(`Thank you for subscribing with ${email}!`, 'success');
+                } else {
+                    alert(`Thank you for subscribing with ${email}!`);
+                }
+                
+                // Reset form
+                form.reset();
+                button.disabled = false;
+                button.innerHTML = 'Subscribe';
+            }, 1000);
         }
+        
+        // Close dropdowns when clicking outside
+        document.addEventListener('click', function(event) {
+            // Close search dropdown
+            const searchContainer = document.querySelector('.search-container');
+            const searchDropdown = document.getElementById('searchDropdown');
+            
+            if (searchDropdown && !searchContainer.contains(event.target)) {
+                searchDropdown.classList.remove('active');
+                searchDropdown.setAttribute('aria-hidden', 'true');
+            }
+            
+            // Close cart when clicking outside
+            const cartSidebar = document.getElementById('cartSidebar');
+            const cartBtn = document.querySelector('.cart-btn');
+            
+            if (cartSidebar && cartSidebar.classList.contains('active') && 
+                !event.target.closest('.cart-sidebar') && 
+                !event.target.closest('.cart-btn')) {
+                cartSidebar.classList.remove('active');
+                cartSidebar.setAttribute('aria-hidden', 'true');
+                document.body.style.overflow = '';
+            }
+        });
+        
+        // Keyboard navigation support
+        document.addEventListener('keydown', function(event) {
+            // Close modals/dropdowns on Escape key
+            if (event.key === 'Escape') {
+                const searchDropdown = document.getElementById('searchDropdown');
+                const cartSidebar = document.getElementById('cartSidebar');
+                const mobileNav = document.querySelector('.main-nav');
+                
+                if (searchDropdown && searchDropdown.classList.contains('active')) {
+                    toggleSearch();
+                }
+                
+                if (cartSidebar && cartSidebar.classList.contains('active')) {
+                    toggleCart();
+                }
+                
+                if (mobileNav && mobileNav.classList.contains('active')) {
+                    toggleMobileMenu();
+                }
+            }
+        });
     </script>
 </body>
 </html>

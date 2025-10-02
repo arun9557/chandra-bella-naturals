@@ -1,32 +1,63 @@
+/**
+ * Main Application Entry Point
+ * Chandra Bella Naturals - Natural Beauty E-commerce
+ */
+
 // Import modules
 import { initializeApp } from './modules/app.js';
 import { productData } from './data/products.js';
+import { showNotification, showLoader, hideLoader } from './modules/utils.js';
 
-// Initialize the application when the DOM is fully loaded
-document.addEventListener('DOMContentLoaded', () => {
+/**
+ * Initialize the application with proper error handling and loading states
+ */
+async function initApplication() {
     try {
+        showLoader();
+        
         // Initialize the app with product data
-        const app = initializeApp(productData);
+        const app = await initializeApp(productData);
         
         // Make app instance available globally if needed
         window.app = app;
         
-        console.log('Application initialized successfully');
+        hideLoader();
+        console.log('✅ Application initialized successfully');
+        showNotification('Welcome to Chandra Bella Naturals!', 'success');
+        
     } catch (error) {
-        console.error('Failed to initialize application:', error);
-        // Show error message to user
+        hideLoader();
+        console.error('❌ Failed to initialize application:', error);
+        
+        // Show user-friendly error message
         const appElement = document.getElementById('app');
         if (appElement) {
             appElement.innerHTML = `
-                <div class="error-message">
-                    <h2>Oops! Something went wrong</h2>
-                    <p>We're having trouble loading the application. Please try refreshing the page.</p>
-                    <button onclick="window.location.reload()" class="btn btn-primary">Refresh Page</button>
+                <div class="error-container">
+                    <div class="error-message">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <h2>Oops! Something went wrong</h2>
+                        <p>We're having trouble loading the application. Please try refreshing the page.</p>
+                        <button onclick="window.location.reload()" class="btn btn-primary">
+                            <i class="fas fa-refresh"></i> Refresh Page
+                        </button>
+                    </div>
                 </div>
             `;
         }
+        
+        // Report error for debugging
+        if (window.gtag) {
+            window.gtag('event', 'exception', {
+                description: error.message,
+                fatal: true
+            });
+        }
     }
-});
+}
+
+// Initialize when DOM is ready
+document.addEventListener('DOMContentLoaded', initApplication);
 
 // Handle service worker registration for PWA
 if ('serviceWorker' in navigator) {
