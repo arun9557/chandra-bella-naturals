@@ -1,57 +1,189 @@
 /**
  * App Module
  * Handles the main application initialization and setup
+ * Enhanced with search functionality, lazy loading, and better error handling
  */
 
-export function initializeApp(productData) {
-    console.log('Initializing app with product data:', productData);
+import { initializeSearch } from './search.js';
+import { showNotification, initLazyLoading, storage } from './utils.js';
+
+export async function initializeApp(productData) {
+    console.log('🚀 Initializing app with product data:', productData);
     
     // Store product data in window for global access if needed
     window.productData = productData;
     
-    // Initialize the home page
-    initializeHomePage(productData);
-    
-    // Initialize cart
-    initializeCart();
-    
-    return {
-        // Public methods
-        getProductById: (id) => {
-            for (const category in productData.products) {
-                const product = productData.products[category].find(p => p.id === id);
-                if (product) return product;
+    try {
+        // Initialize the home page
+        await initializeHomePage(productData);
+        
+        // Initialize cart
+        initializeCart();
+        
+        // Initialize search functionality
+        const allProducts = getAllProductsFlat(productData);
+        const searchInstance = initializeSearch(allProducts, '#headerSearchInput', '#headerSearchResults');
+        
+        // Initialize lazy loading for images
+        initLazyLoading();
+        
+        // Setup performance monitoring
+        setupPerformanceMonitoring();
+        
+        console.log('✅ App initialization completed successfully');
+        
+        return {
+            // Public methods
+            getProductById: (id) => getProductById(productData, id),
+            getFeaturedProducts: () => getFeaturedProducts(productData),
+            getAllProducts: () => getAllProductsFlat(productData),
+            search: searchInstance,
+            // Analytics methods
+            trackEvent: (event, data) => {
+                if (window.gtag) window.gtag('event', event, data);
+                console.log('📊 Event:', event, data);
             }
-            return null;
-        },
-        getFeaturedProducts: () => {
-            return productData.featured.map(id => {
-                for (const category in productData.products) {
-                    const product = productData.products[category].find(p => p.id === id);
-                    if (product) return product;
-                }
-                return null;
-            }).filter(Boolean);
-        }
+        };
+    } catch (error) {
+        console.error('❌ Error during app initialization:', error);
+        throw error;
+    }
+}
+
+/**
+ * Helper function to get all products as a flat array
+ */
+function getAllProductsFlat(productData) {
+    return Object.values(productData.products).flat();
+}
+
+/**
+ * Helper function to get product by ID
+ */
+function getProductById(productData, id) {
+    for (const category in productData.products) {
+        const product = productData.products[category].find(p => p.id === id);
+        if (product) return product;
+    }
+    return null;
+}
+
+/**
+ * Helper function to get featured products
+ */
+function getFeaturedProducts(productData) {
+    return productData.featured.map(id => getProductById(productData, id)).filter(Boolean);
+}
+
+/**
+ * Get icon for brand values
+ */
+function getValueIcon(value) {
+    const iconMap = {
+        '100% Natural Ingredients': 'leaf',
+        'Cruelty-Free & Vegan': 'heart',
+        'Sustainable Packaging': 'recycle',
+        'Ethically Sourced': 'handshake',
+        'Dermatologically Tested': 'shield-alt'
     };
+    return iconMap[value] || 'star';
+}
+
+/**
+ * Setup performance monitoring
+ */
+function setupPerformanceMonitoring() {
+    // Monitor Core Web Vitals
+    if ('web-vital' in window) {
+        // This would integrate with a real performance monitoring service
+        console.log('📈 Performance monitoring initialized');
+    }
+    
+    // Monitor page load time
+    window.addEventListener('load', () => {
+        const loadTime = performance.now();
+        console.log(`⚡ Page loaded in ${loadTime.toFixed(2)}ms`);
+        
+        // Track performance
+        if (window.gtag) {
+            window.gtag('event', 'page_load_time', {
+                value: Math.round(loadTime)
+            });
+        }
+    });
 }
 
 // Initialize the home page
-function initializeHomePage(productData) {
+async function initializeHomePage(productData) {
     const app = document.getElementById('app');
     if (!app) return;
     
     // Create home page content
     app.innerHTML = `
         <section id="home" class="page active">
-            <!-- Hero Section -->
-            <div class="hero">
+            <!-- Professional Hero Section -->
+            <div class="hero-banner">
+                <div class="hero-background">
+                    <div class="hero-overlay"></div>
+                    <div class="floating-particles">
+                        <div class="particle particle-1">✨</div>
+                        <div class="particle particle-2">🌸</div>
+                        <div class="particle particle-3">💜</div>
+                        <div class="particle particle-4">🦋</div>
+                        <div class="particle particle-5">✨</div>
+                        <div class="particle particle-6">🌺</div>
+                    </div>
+                </div>
                 <div class="container">
-                    <h1>${productData.brand.name}</h1>
-                    <p>${productData.brand.tagline}</p>
-                    <a href="#shop" class="btn btn-primary">Shop Now</a>
+                    <div class="hero-content">
+                        <div class="brand-logo">
+                            <img src="/Whimsical Purple Beauty Brand Logo with Gray 11.png" alt="The Chandra Bella Naturals Logo" class="logo-image">
+                        </div>
+                        <div class="hero-text-content">
+                            <h1 class="hero-title script-font">Where Beauty Meets Nature</h1>
+                            <p class="hero-tagline script-font">Embrace Your Natural Radiance</p>
+                            <p class="hero-description">Discover the enchanting world of natural beauty with our carefully curated collection. Each product is a testament to nature's finest ingredients, crafted with love and dedication to enhance your inherent beauty.</p>
+                            <div class="hero-quote">
+                                <p class="quote-text script-font">"Beauty begins the moment you decide to be yourself"</p>
+                            </div>
+                        </div>
+                        <div class="hero-actions">
+                            <a href="#shop" class="btn btn-primary btn-large">Explore Collection</a>
+                            <a href="#about" class="btn btn-outline btn-large">Our Story</a>
+                        </div>
+                        <div class="hero-features">
+                            <div class="feature-item">
+                                <i class="fas fa-leaf"></i>
+                                <span>100% Natural</span>
+                            </div>
+                            <div class="feature-item">
+                                <i class="fas fa-heart"></i>
+                                <span>Cruelty Free</span>
+                            </div>
+                            <div class="feature-item">
+                                <i class="fas fa-recycle"></i>
+                                <span>Sustainable</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
+            
+            <!-- Brand Values Section -->
+            <section class="brand-values">
+                <div class="container">
+                    <div class="values-grid">
+                        ${productData.brand.values.map(value => `
+                            <div class="value-card">
+                                <div class="value-icon">
+                                    <i class="fas fa-${getValueIcon(value)}"></i>
+                                </div>
+                                <h3>${value}</h3>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            </section>
             
             <!-- Featured Products -->
             <section class="products">
@@ -78,10 +210,12 @@ function initializeHomePage(productData) {
             <div class="container">
                 <h1 class="section-title">Our Products</h1>
                 <div class="product-filters">
-                    <button class="btn btn-outline active" data-category="all">All</button>
+                    <button class="btn btn-outline active" data-category="all">All Products</button>
                     <button class="btn btn-outline" data-category="face">Face</button>
                     <button class="btn btn-outline" data-category="lips">Lips</button>
                     <button class="btn btn-outline" data-category="skincare">Skincare</button>
+                    <button class="btn btn-outline" data-category="hair">Hair</button>
+                    <button class="btn btn-outline" data-category="body">Body</button>
                 </div>
                 <div class="product-grid" id="shopProducts">
                     <!-- All products will be inserted here -->
@@ -92,20 +226,35 @@ function initializeHomePage(productData) {
         <!-- About Page -->
         <section id="about" class="page">
             <div class="container">
-                <h1 class="section-title">About Us</h1>
+                <div class="about-hero">
+                    <img src="/Whimsical Purple Beauty Brand Logo with Gray 11.png" alt="The Chandra Bella Naturals" class="about-logo">
+                    <h1 class="section-title script-font">Our Beautiful Journey</h1>
+                </div>
                 <div class="about-content">
                     <div class="about-text">
-                        <h2>${productData.brand.name}</h2>
-                        <p>${productData.brand.mission}</p>
-                        <p>${productData.brand.story}</p>
+                        <div class="elegant-quote">
+                            <p class="quote-text script-font">"In every drop of nature's essence, we find the secret to timeless beauty"</p>
+                        </div>
                         
-                        <h3>Our Values</h3>
-                        <ul class="values-list">
-                            ${productData.brand.values.map(value => `<li>${value}</li>`).join('')}
+                        <h2 class="script-font">The Chandra Bella Story</h2>
+                        <p class="elegant-text">${productData.brand.mission}</p>
+                        <p class="elegant-text">${productData.brand.story}</p>
+                        
+                        <div class="founder-message">
+                            <h3 class="script-font">A Message from Our Heart</h3>
+                            <p class="elegant-text">At The Chandra Bella Naturals, we believe that true beauty radiates from within. Our carefully crafted products are more than just cosmetics – they are a celebration of your unique essence, designed to enhance the natural radiance that makes you extraordinary.</p>
+                        </div>
+                        
+                        <h3 class="script-font">Our Sacred Values</h3>
+                        <ul class="values-list elegant-list">
+                            ${productData.brand.values.map(value => `<li class="value-item"><i class="fas fa-leaf"></i> ${value}</li>`).join('')}
                         </ul>
                     </div>
                     <div class="about-image">
-                        <img src="/images/about.jpg" alt="About ${productData.brand.name}">
+                        <div class="image-placeholder">
+                            <i class="fas fa-spa"></i>
+                            <p>Natural Beauty Essence</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -192,14 +341,22 @@ function renderFeaturedProducts() {
     }
     
     featuredContainer.innerHTML = featuredProducts.map(product => `
-        <div class="product-card" data-id="${product.id}">
+        <div class="product-card fade-in" data-id="${product.id}">
             <div class="product-image">
-                <img src="${product.image}" alt="${product.name}">
+                <img data-src="${product.image}" 
+                     alt="${product.name}" 
+                     class="lazy"
+                     loading="lazy"
+                     src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Crect width='100%25' height='100%25' fill='%23f0f0f0'/%3E%3C/svg%3E">
                 <div class="product-actions">
-                    <button class="btn-quick-view" onclick="openProductModal(${product.id})">
+                    <button class="btn-quick-view" 
+                            onclick="openProductModal(${product.id})"
+                            aria-label="Quick view ${product.name}">
                         <i class="fas fa-eye"></i>
                     </button>
-                    <button class="btn-add-to-cart" onclick="addToCartQuick(${product.id})">
+                    <button class="btn-add-to-cart" 
+                            onclick="addToCartQuick(${product.id})"
+                            aria-label="Add ${product.name} to cart">
                         <i class="fas fa-shopping-cart"></i>
                     </button>
                 </div>
@@ -209,7 +366,7 @@ function renderFeaturedProducts() {
                 <div class="product-price">${product.price}</div>
                 <div class="product-rating">
                     ${generateStarRating(product.rating)}
-                    <span class="review-count">(${product.reviews})</span>
+                    <span class="review-count">(${product.reviews} reviews)</span>
                 </div>
             </div>
         </div>
@@ -232,14 +389,22 @@ function renderAllProducts() {
     }
     
     shopContainer.innerHTML = allProducts.map(product => `
-        <div class="product-card" data-id="${product.id}" data-category="${product.category}">
+        <div class="product-card fade-in" data-id="${product.id}" data-category="${product.category}">
             <div class="product-image">
-                <img src="${product.image}" alt="${product.name}">
+                <img data-src="${product.image}" 
+                     alt="${product.name}" 
+                     class="lazy"
+                     loading="lazy"
+                     src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Crect width='100%25' height='100%25' fill='%23f0f0f0'/%3E%3C/svg%3E">
                 <div class="product-actions">
-                    <button class="btn-quick-view" onclick="openProductModal(${product.id})">
+                    <button class="btn-quick-view" 
+                            onclick="openProductModal(${product.id})"
+                            aria-label="Quick view ${product.name}">
                         <i class="fas fa-eye"></i>
                     </button>
-                    <button class="btn-add-to-cart" onclick="addToCartQuick(${product.id})">
+                    <button class="btn-add-to-cart" 
+                            onclick="addToCartQuick(${product.id})"
+                            aria-label="Add ${product.name} to cart">
                         <i class="fas fa-shopping-cart"></i>
                     </button>
                 </div>
@@ -249,7 +414,7 @@ function renderAllProducts() {
                 <div class="product-price">${product.price}</div>
                 <div class="product-rating">
                     ${generateStarRating(product.rating)}
-                    <span class="review-count">(${product.reviews})</span>
+                    <span class="review-count">(${product.reviews} reviews)</span>
                 </div>
             </div>
         </div>
@@ -278,11 +443,19 @@ function generateStarRating(rating) {
     return stars;
 }
 
-// Initialize cart
+// Initialize cart with better error handling
 function initializeCart() {
-    // Load cart from localStorage if available
-    window.cart = JSON.parse(localStorage.getItem('cart')) || [];
-    updateCartCount();
+    try {
+        // Load cart from localStorage if available
+        window.cart = storage.get('cart', []);
+        updateCartCount();
+        updateCartSidebar();
+        console.log('🛒 Cart initialized with', window.cart.length, 'items');
+    } catch (error) {
+        console.error('❌ Error initializing cart:', error);
+        window.cart = [];
+        showNotification('Error loading cart data', 'error');
+    }
 }
 
 // Update cart count in header
@@ -332,15 +505,19 @@ window.openProductModal = (productId) => {
 };
 
 window.addToCartQuick = (productId) => {
-    const product = window.productData.products
-        .flatMap(category => category.products)
-        .find(p => p.id === productId);
-    
-    if (product) {
+    try {
+        const product = getProductById(window.productData, productId);
+        
+        if (!product) {
+            showNotification('Product not found', 'error');
+            return;
+        }
+        
         const existingItem = window.cart.find(item => item.id === productId);
         
         if (existingItem) {
             existingItem.quantity += 1;
+            showNotification(`Updated ${product.name} quantity in cart`, 'success');
         } else {
             window.cart.push({
                 id: product.id,
@@ -349,17 +526,50 @@ window.addToCartQuick = (productId) => {
                 image: product.image,
                 quantity: 1
             });
+            showNotification(`${product.name} added to cart!`, 'success');
         }
         
-        // Save to localStorage
-        localStorage.setItem('cart', JSON.stringify(window.cart));
+        // Save to localStorage with error handling
+        if (!storage.set('cart', window.cart)) {
+            showNotification('Error saving cart data', 'error');
+            return;
+        }
         
         // Update UI
         updateCartCount();
         updateCartSidebar();
         
-        // Show notification
-        showNotification('Product added to cart!', 'success');
+        // Track analytics
+        if (window.gtag) {
+            window.gtag('event', 'add_to_cart', {
+                currency: 'INR',
+                value: parseFloat(product.price.replace(/[^0-9.]/g, '')),
+                items: [{
+                    item_id: product.id,
+                    item_name: product.name,
+                    category: product.category,
+                    quantity: 1,
+                    price: parseFloat(product.price.replace(/[^0-9.]/g, ''))
+                }]
+            });
+        }
+        
+        // Add visual feedback to button
+        const button = document.querySelector(`[onclick="addToCartQuick(${productId})"]`);
+        if (button) {
+            const originalHTML = button.innerHTML;
+            button.innerHTML = '<i class="fas fa-check"></i>';
+            button.disabled = true;
+            
+            setTimeout(() => {
+                button.innerHTML = originalHTML;
+                button.disabled = false;
+            }, 1000);
+        }
+        
+    } catch (error) {
+        console.error('❌ Error adding product to cart:', error);
+        showNotification('Error adding product to cart', 'error');
     }
 };
 
@@ -427,22 +637,7 @@ window.subscribeNewsletter = (event) => {
     event.target.reset();
 };
 
-// Show notification
-function showNotification(message, type = 'info') {
-    const notification = document.createElement('div');
-    notification.className = `notification ${type}`;
-    notification.textContent = message;
-    
-    document.body.appendChild(notification);
-    
-    // Remove notification after 3 seconds
-    setTimeout(() => {
-        notification.classList.add('fade-out');
-        setTimeout(() => {
-            notification.remove();
-        }, 300);
-    }, 3000);
-}
+// showNotification function is imported from utils.js
 
 // Export the module
 export default {
