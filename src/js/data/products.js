@@ -183,11 +183,110 @@ export const productData = {
                 category: "skincare",
                 tags: ["sunscreen", "spf", "sun protection"]
             }
+        ],
+        
+        // Hair Products
+        hair: [
+            {
+                id: 13,
+                name: "Argan Oil Hair Serum",
+                price: "₹899",
+                image: "/images/products/hair-serum.jpg",
+                rating: 4.8,
+                reviews: 234,
+                description: "Nourishing hair serum for silky, smooth, and healthy hair",
+                ingredients: ["Argan Oil", "Vitamin E", "Jojoba Oil", "Rosemary Extract"],
+                usage: "Apply 2-3 drops to damp or dry hair, focusing on mid-lengths and ends",
+                category: "hair",
+                tags: ["hair serum", "argan oil", "hair care"]
+            },
+            {
+                id: 14,
+                name: "Natural Shampoo Bar",
+                price: "₹449",
+                image: "/images/products/shampoo-bar.jpg",
+                rating: 4.6,
+                reviews: 189,
+                description: "Eco-friendly solid shampoo bar for all hair types",
+                ingredients: ["Coconut Oil", "Olive Oil", "Shea Butter", "Essential Oils"],
+                usage: "Wet hair and bar, lather in hands or directly on hair, rinse thoroughly",
+                category: "hair",
+                tags: ["shampoo bar", "eco-friendly", "natural"]
+            },
+            {
+                id: 15,
+                name: "Hair Growth Oil",
+                price: "₹699",
+                image: "/images/products/hair-oil.jpg",
+                rating: 4.7,
+                reviews: 156,
+                description: "Ayurvedic hair oil blend to promote healthy hair growth",
+                ingredients: ["Bhringraj", "Amla", "Fenugreek", "Curry Leaves"],
+                usage: "Massage into scalp and hair, leave for 2-4 hours or overnight, wash with shampoo",
+                category: "hair",
+                tags: ["hair growth", "ayurvedic", "hair oil"]
+            }
+        ],
+        
+        // Body Products
+        body: [
+            {
+                id: 16,
+                name: "Body Butter - Vanilla Coconut",
+                price: "₹649",
+                image: "/images/products/body-butter.jpg",
+                rating: 4.9,
+                reviews: 298,
+                description: "Rich, creamy body butter for intense hydration",
+                ingredients: ["Shea Butter", "Coconut Oil", "Vanilla Extract", "Vitamin E"],
+                usage: "Apply to clean, dry skin and massage until absorbed",
+                category: "body",
+                tags: ["body butter", "moisturizer", "vanilla"]
+            },
+            {
+                id: 17,
+                name: "Exfoliating Body Scrub",
+                price: "₹549",
+                image: "/images/products/body-scrub.jpg",
+                rating: 4.7,
+                reviews: 167,
+                description: "Gentle exfoliating scrub with natural sugar and oils",
+                ingredients: ["Brown Sugar", "Coconut Oil", "Coffee Grounds", "Sweet Almond Oil"],
+                usage: "Apply to wet skin in circular motions, rinse with warm water",
+                category: "body",
+                tags: ["body scrub", "exfoliating", "coffee"]
+            },
+            {
+                id: 18,
+                name: "Natural Deodorant",
+                price: "₹399",
+                image: "/images/products/deodorant.jpg",
+                rating: 4.5,
+                reviews: 203,
+                description: "Aluminum-free natural deodorant with long-lasting protection",
+                ingredients: ["Coconut Oil", "Baking Soda", "Arrowroot Powder", "Essential Oils"],
+                usage: "Apply a small amount to clean, dry underarms",
+                category: "body",
+                tags: ["deodorant", "aluminum-free", "natural"]
+            },
+            {
+                id: 19,
+                name: "Luxury Bath Salts",
+                price: "₹799",
+                image: "/images/products/bath-salts.jpg",
+                rating: 4.8,
+                reviews: 145,
+                description: "Relaxing bath salts infused with lavender and eucalyptus",
+                ingredients: ["Epsom Salt", "Dead Sea Salt", "Lavender Oil", "Eucalyptus Oil"],
+                usage: "Add 2-3 tablespoons to warm bath water, soak and relax",
+                category: "body",
+                tags: ["bath salts", "relaxing", "lavender"]
+            }
         ]
     },
     
     // Featured Products (IDs of featured products)
-    featured: [1, 4, 7, 10, 12]
+    featured: [1, 4, 7, 10, 12, 13, 16]
 };
 
 // Export a function to get all products

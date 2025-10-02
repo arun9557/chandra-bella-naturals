@@ -76,6 +76,20 @@ function getFeaturedProducts(productData) {
 }
 
 /**
+ * Get icon for brand values
+ */
+function getValueIcon(value) {
+    const iconMap = {
+        '100% Natural Ingredients': 'leaf',
+        'Cruelty-Free & Vegan': 'heart',
+        'Sustainable Packaging': 'recycle',
+        'Ethically Sourced': 'handshake',
+        'Dermatologically Tested': 'shield-alt'
+    };
+    return iconMap[value] || 'star';
+}
+
+/**
  * Setup performance monitoring
  */
 function setupPerformanceMonitoring() {
@@ -107,14 +121,56 @@ async function initializeHomePage(productData) {
     // Create home page content
     app.innerHTML = `
         <section id="home" class="page active">
-            <!-- Hero Section -->
-            <div class="hero">
+            <!-- Professional Hero Section -->
+            <div class="hero-banner">
+                <div class="hero-background">
+                    <div class="hero-overlay"></div>
+                </div>
                 <div class="container">
-                    <h1>${productData.brand.name}</h1>
-                    <p>${productData.brand.tagline}</p>
-                    <a href="#shop" class="btn btn-primary">Shop Now</a>
+                    <div class="hero-content">
+                        <div class="brand-logo">
+                            <img src="/Whimsical Purple Beauty Brand Logo with Gray 11.png" alt="Chandra Bella Naturals Logo" class="logo-image">
+                        </div>
+                        <h1 class="hero-title">${productData.brand.name}</h1>
+                        <p class="hero-tagline">${productData.brand.tagline}</p>
+                        <p class="hero-description">Discover the power of nature with our premium collection of natural beauty products. Crafted with love, made for you.</p>
+                        <div class="hero-actions">
+                            <a href="#shop" class="btn btn-primary btn-large">Explore Collection</a>
+                            <a href="#about" class="btn btn-outline btn-large">Our Story</a>
+                        </div>
+                        <div class="hero-features">
+                            <div class="feature-item">
+                                <i class="fas fa-leaf"></i>
+                                <span>100% Natural</span>
+                            </div>
+                            <div class="feature-item">
+                                <i class="fas fa-heart"></i>
+                                <span>Cruelty Free</span>
+                            </div>
+                            <div class="feature-item">
+                                <i class="fas fa-recycle"></i>
+                                <span>Sustainable</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
+            
+            <!-- Brand Values Section -->
+            <section class="brand-values">
+                <div class="container">
+                    <div class="values-grid">
+                        ${productData.brand.values.map(value => `
+                            <div class="value-card">
+                                <div class="value-icon">
+                                    <i class="fas fa-${getValueIcon(value)}"></i>
+                                </div>
+                                <h3>${value}</h3>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            </section>
             
             <!-- Featured Products -->
             <section class="products">
@@ -141,10 +197,12 @@ async function initializeHomePage(productData) {
             <div class="container">
                 <h1 class="section-title">Our Products</h1>
                 <div class="product-filters">
-                    <button class="btn btn-outline active" data-category="all">All</button>
+                    <button class="btn btn-outline active" data-category="all">All Products</button>
                     <button class="btn btn-outline" data-category="face">Face</button>
                     <button class="btn btn-outline" data-category="lips">Lips</button>
                     <button class="btn btn-outline" data-category="skincare">Skincare</button>
+                    <button class="btn btn-outline" data-category="hair">Hair</button>
+                    <button class="btn btn-outline" data-category="body">Body</button>
                 </div>
                 <div class="product-grid" id="shopProducts">
                     <!-- All products will be inserted here -->
@@ -551,22 +609,7 @@ window.subscribeNewsletter = (event) => {
     event.target.reset();
 };
 
-// Show notification
-function showNotification(message, type = 'info') {
-    const notification = document.createElement('div');
-    notification.className = `notification ${type}`;
-    notification.textContent = message;
-    
-    document.body.appendChild(notification);
-    
-    // Remove notification after 3 seconds
-    setTimeout(() => {
-        notification.classList.add('fade-out');
-        setTimeout(() => {
-            notification.remove();
-        }, 300);
-    }, 3000);
-}
+// showNotification function is imported from utils.js
 
 // Export the module
 export default {

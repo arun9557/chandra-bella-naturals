@@ -25,6 +25,9 @@ async function initApplication() {
         console.log('✅ Application initialized successfully');
         showNotification('Welcome to Chandra Bella Naturals!', 'success');
         
+        // Make showNotification available globally
+        window.showNotification = showNotification;
+        
     } catch (error) {
         hideLoader();
         console.error('❌ Failed to initialize application:', error);
@@ -140,22 +143,7 @@ window.checkout = function() {
     showNotification('Redirecting to checkout...', 'info');
 };
 
-// Show notification
-function showNotification(message, type = 'info') {
-    const notification = document.createElement('div');
-    notification.className = `notification ${type}`;
-    notification.textContent = message;
-    
-    document.body.appendChild(notification);
-    
-    // Remove notification after 3 seconds
-    setTimeout(() => {
-        notification.classList.add('fade-out');
-        setTimeout(() => {
-            notification.remove();
-        }, 300);
-    }, 3000);
-}
+// showNotification function is imported from utils.js
 
 // Add smooth scrolling for anchor links
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
