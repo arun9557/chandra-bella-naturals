@@ -1,43 +1,106 @@
 /**
  * App Module
  * Handles the main application initialization and setup
+ * Enhanced with search functionality, lazy loading, and better error handling
  */
 
-export function initializeApp(productData) {
-    console.log('Initializing app with product data:', productData);
+import { initializeSearch } from './search.js';
+import { showNotification, initLazyLoading, storage } from './utils.js';
+
+export async function initializeApp(productData) {
+    console.log('🚀 Initializing app with product data:', productData);
     
     // Store product data in window for global access if needed
     window.productData = productData;
     
-    // Initialize the home page
-    initializeHomePage(productData);
-    
-    // Initialize cart
-    initializeCart();
-    
-    return {
-        // Public methods
-        getProductById: (id) => {
-            for (const category in productData.products) {
-                const product = productData.products[category].find(p => p.id === id);
-                if (product) return product;
+    try {
+        // Initialize the home page
+        await initializeHomePage(productData);
+        
+        // Initialize cart
+        initializeCart();
+        
+        // Initialize search functionality
+        const allProducts = getAllProductsFlat(productData);
+        const searchInstance = initializeSearch(allProducts, '#headerSearchInput', '#headerSearchResults');
+        
+        // Initialize lazy loading for images
+        initLazyLoading();
+        
+        // Setup performance monitoring
+        setupPerformanceMonitoring();
+        
+        console.log('✅ App initialization completed successfully');
+        
+        return {
+            // Public methods
+            getProductById: (id) => getProductById(productData, id),
+            getFeaturedProducts: () => getFeaturedProducts(productData),
+            getAllProducts: () => getAllProductsFlat(productData),
+            search: searchInstance,
+            // Analytics methods
+            trackEvent: (event, data) => {
+                if (window.gtag) window.gtag('event', event, data);
+                console.log('📊 Event:', event, data);
             }
-            return null;
-        },
-        getFeaturedProducts: () => {
-            return productData.featured.map(id => {
-                for (const category in productData.products) {
-                    const product = productData.products[category].find(p => p.id === id);
-                    if (product) return product;
-                }
-                return null;
-            }).filter(Boolean);
+        };
+    } catch (error) {
+        console.error('❌ Error during app initialization:', error);
+        throw error;
+    }
+}
+
+/**
+ * Helper function to get all products as a flat array
+ */
+function getAllProductsFlat(productData) {
+    return Object.values(productData.products).flat();
+}
+
+/**
+ * Helper function to get product by ID
+ */
+function getProductById(productData, id) {
+    for (const category in productData.products) {
+        const product = productData.products[category].find(p => p.id === id);
+        if (product) return product;
+    }
+    return null;
+}
+
+/**
+ * Helper function to get featured products
+ */
+function getFeaturedProducts(productData) {
+    return productData.featured.map(id => getProductById(productData, id)).filter(Boolean);
+}
+
+/**
+ * Setup performance monitoring
+ */
+function setupPerformanceMonitoring() {
+    // Monitor Core Web Vitals
+    if ('web-vital' in window) {
+        // This would integrate with a real performance monitoring service
+        console.log('📈 Performance monitoring initialized');
+    }
+    
+    // Monitor page load time
+    window.addEventListener('load', () => {
+        const loadTime = performance.now();
+        console.log(`⚡ Page loaded in ${loadTime.toFixed(2)}ms`);
+        
+        // Track performance
+        if (window.gtag) {
+            window.gtag('event', 'page_load_time', {
+                value: Math.round(loadTime)
+            });
         }
-    };
+    });
 }
 
 // Initialize the home page
-function initializeHomePage(productData) {
+async function initializeHomePage(productData) {
     const app = document.getElementById('app');
     if (!app) return;
     
@@ -192,14 +255,22 @@ function renderFeaturedProducts() {
     }
     
     featuredContainer.innerHTML = featuredProducts.map(product => `
-        <div class="product-card" data-id="${product.id}">
+        <div class="product-card fade-in" data-id="${product.id}">
             <div class="product-image">
-                <img src="${product.image}" alt="${product.name}">
+                <img data-src="${product.image}" 
+                     alt="${product.name}" 
+                     class="lazy"
+                     loading="lazy"
+                     src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Crect width='100%25' height='100%25' fill='%23f0f0f0'/%3E%3C/svg%3E">
                 <div class="product-actions">
-                    <button class="btn-quick-view" onclick="openProductModal(${product.id})">
+                    <button class="btn-quick-view" 
+                            onclick="openProductModal(${product.id})"
+                            aria-label="Quick view ${product.name}">
                         <i class="fas fa-eye"></i>
                     </button>
-                    <button class="btn-add-to-cart" onclick="addToCartQuick(${product.id})">
+                    <button class="btn-add-to-cart" 
+                            onclick="addToCartQuick(${product.id})"
+                            aria-label="Add ${product.name} to cart">
                         <i class="fas fa-shopping-cart"></i>
                     </button>
                 </div>
@@ -209,7 +280,7 @@ function renderFeaturedProducts() {
                 <div class="product-price">${product.price}</div>
                 <div class="product-rating">
                     ${generateStarRating(product.rating)}
-                    <span class="review-count">(${product.reviews})</span>
+                    <span class="review-count">(${product.reviews} reviews)</span>
                 </div>
             </div>
         </div>
@@ -232,14 +303,22 @@ function renderAllProducts() {
     }
     
     shopContainer.innerHTML = allProducts.map(product => `
-        <div class="product-card" data-id="${product.id}" data-category="${product.category}">
+        <div class="product-card fade-in" data-id="${product.id}" data-category="${product.category}">
             <div class="product-image">
-                <img src="${product.image}" alt="${product.name}">
+                <img data-src="${product.image}" 
+                     alt="${product.name}" 
+                     class="lazy"
+                     loading="lazy"
+                     src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Crect width='100%25' height='100%25' fill='%23f0f0f0'/%3E%3C/svg%3E">
                 <div class="product-actions">
-                    <button class="btn-quick-view" onclick="openProductModal(${product.id})">
+                    <button class="btn-quick-view" 
+                            onclick="openProductModal(${product.id})"
+                            aria-label="Quick view ${product.name}">
                         <i class="fas fa-eye"></i>
                     </button>
-                    <button class="btn-add-to-cart" onclick="addToCartQuick(${product.id})">
+                    <button class="btn-add-to-cart" 
+                            onclick="addToCartQuick(${product.id})"
+                            aria-label="Add ${product.name} to cart">
                         <i class="fas fa-shopping-cart"></i>
                     </button>
                 </div>
@@ -249,7 +328,7 @@ function renderAllProducts() {
                 <div class="product-price">${product.price}</div>
                 <div class="product-rating">
                     ${generateStarRating(product.rating)}
-                    <span class="review-count">(${product.reviews})</span>
+                    <span class="review-count">(${product.reviews} reviews)</span>
                 </div>
             </div>
         </div>
@@ -278,11 +357,19 @@ function generateStarRating(rating) {
     return stars;
 }
 
-// Initialize cart
+// Initialize cart with better error handling
 function initializeCart() {
-    // Load cart from localStorage if available
-    window.cart = JSON.parse(localStorage.getItem('cart')) || [];
-    updateCartCount();
+    try {
+        // Load cart from localStorage if available
+        window.cart = storage.get('cart', []);
+        updateCartCount();
+        updateCartSidebar();
+        console.log('🛒 Cart initialized with', window.cart.length, 'items');
+    } catch (error) {
+        console.error('❌ Error initializing cart:', error);
+        window.cart = [];
+        showNotification('Error loading cart data', 'error');
+    }
 }
 
 // Update cart count in header
@@ -332,15 +419,19 @@ window.openProductModal = (productId) => {
 };
 
 window.addToCartQuick = (productId) => {
-    const product = window.productData.products
-        .flatMap(category => category.products)
-        .find(p => p.id === productId);
-    
-    if (product) {
+    try {
+        const product = getProductById(window.productData, productId);
+        
+        if (!product) {
+            showNotification('Product not found', 'error');
+            return;
+        }
+        
         const existingItem = window.cart.find(item => item.id === productId);
         
         if (existingItem) {
             existingItem.quantity += 1;
+            showNotification(`Updated ${product.name} quantity in cart`, 'success');
         } else {
             window.cart.push({
                 id: product.id,
@@ -349,17 +440,50 @@ window.addToCartQuick = (productId) => {
                 image: product.image,
                 quantity: 1
             });
+            showNotification(`${product.name} added to cart!`, 'success');
         }
         
-        // Save to localStorage
-        localStorage.setItem('cart', JSON.stringify(window.cart));
+        // Save to localStorage with error handling
+        if (!storage.set('cart', window.cart)) {
+            showNotification('Error saving cart data', 'error');
+            return;
+        }
         
         // Update UI
         updateCartCount();
         updateCartSidebar();
         
-        // Show notification
-        showNotification('Product added to cart!', 'success');
+        // Track analytics
+        if (window.gtag) {
+            window.gtag('event', 'add_to_cart', {
+                currency: 'INR',
+                value: parseFloat(product.price.replace(/[^0-9.]/g, '')),
+                items: [{
+                    item_id: product.id,
+                    item_name: product.name,
+                    category: product.category,
+                    quantity: 1,
+                    price: parseFloat(product.price.replace(/[^0-9.]/g, ''))
+                }]
+            });
+        }
+        
+        // Add visual feedback to button
+        const button = document.querySelector(`[onclick="addToCartQuick(${productId})"]`);
+        if (button) {
+            const originalHTML = button.innerHTML;
+            button.innerHTML = '<i class="fas fa-check"></i>';
+            button.disabled = true;
+            
+            setTimeout(() => {
+                button.innerHTML = originalHTML;
+                button.disabled = false;
+            }, 1000);
+        }
+        
+    } catch (error) {
+        console.error('❌ Error adding product to cart:', error);
+        showNotification('Error adding product to cart', 'error');
     }
 };
 
