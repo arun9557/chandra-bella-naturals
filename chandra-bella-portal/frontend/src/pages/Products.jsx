@@ -2,19 +2,19 @@ import { useState, useEffect } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { Search, Filter, Grid, List } from 'lucide-react'
 import ProductCard from '../components/ProductCard'
-import { productsAPI } from '../services/api'
+import { getAllProducts, searchProducts } from '../data/productData'
 
 const Products = () => {
-  const [searchParams, setSearchParams] = useSearchParams()
+  const [searchParams] = useSearchParams()
   const [products, setProducts] = useState([])
+  const [filteredProducts, setFilteredProducts] = useState([])
   const [loading, setLoading] = useState(true)
+  const [searchQuery, setSearchQuery] = useState('')
+  const [selectedCategory, setSelectedCategory] = useState('')
+  const [priceRange, setPriceRange] = useState('')
+  const [minRating, setMinRating] = useState('')
+  const [sortBy, setSortBy] = useState('name')
   const [viewMode, setViewMode] = useState('grid')
-  const [filters, setFilters] = useState({
-    search: searchParams.get('search') || '',
-    category: searchParams.get('category') || '',
-    priceRange: '',
-    rating: ''
-  })
 
   const categories = [
     { value: '', label: 'All Categories' },
@@ -22,249 +22,189 @@ const Products = () => {
     { value: 'lips', label: 'Lips' },
     { value: 'skincare', label: 'Skincare' },
     { value: 'hair', label: 'Hair' },
-    { value: 'body', label: 'Body' }
+    { value: 'body', label: 'Body' },
   ]
 
   const priceRanges = [
     { value: '', label: 'All Prices' },
-    { value: '0-500', label: '₹0 - ₹500' },
+    { value: '0-500', label: 'Under ₹500' },
     { value: '500-800', label: '₹500 - ₹800' },
     { value: '800-1200', label: '₹800 - ₹1200' },
-    { value: '1200+', label: '₹1200+' }
+    { value: '1200+', label: 'Above ₹1200' },
   ]
 
-  const ratings = [
+  const ratingFilters = [
     { value: '', label: 'All Ratings' },
     { value: '4.5', label: '4.5+ Stars' },
-    { value: '4', label: '4+ Stars' },
-    { value: '3', label: '3+ Stars' }
+    { value: '4.0', label: '4.0+ Stars' },
+    { value: '3.5', label: '3.5+ Stars' },
+  ]
+
+  const sortOptions = [
+    { value: 'name', label: 'Name A-Z' },
+    { value: 'price-low', label: 'Price Low to High' },
+    { value: 'price-high', label: 'Price High to Low' },
+    { value: 'rating', label: 'Highest Rated' },
+    { value: 'newest', label: 'Newest First' },
   ]
 
   useEffect(() => {
     loadProducts()
-  }, [filters])
+  }, [])
+
+  useEffect(() => {
+    // Get initial filters from URL params
+    const category = searchParams.get('category') || ''
+    const search = searchParams.get('search') || ''
+    
+    setSelectedCategory(category)
+    setSearchQuery(search)
+  }, [searchParams])
+
+  useEffect(() => {
+    applyFilters()
+  }, [products, searchQuery, selectedCategory, priceRange, minRating, sortBy])
 
   const loadProducts = async () => {
     try {
       setLoading(true)
-      let response
-
-      if (filters.search) {
-        response = await productsAPI.search(filters.search)
-      } else if (filters.category) {
-        response = await productsAPI.getByCategory(filters.category)
-      } else {
-        response = await productsAPI.getAll()
-      }
-
-      let filteredProducts = response.data
-
-      // Apply client-side filters
-      if (filters.priceRange) {
-        const [min, max] = filters.priceRange.split('-').map(Number)
-        filteredProducts = filteredProducts.filter(product => {
-          const price = parseFloat(product.price.replace('₹', ''))
-          if (max) {
-            return price >= min && price <= max
-          } else {
-            return price >= min
-          }
-        })
-      }
-
-      if (filters.rating) {
-        const minRating = parseFloat(filters.rating)
-        filteredProducts = filteredProducts.filter(product => product.rating >= minRating)
-      }
-
-      setProducts(filteredProducts)
+      // Simulate API call delay
+      await new Promise(resolve => setTimeout(resolve, 500))
+      const allProducts = getAllProducts()
+      setProducts(allProducts)
     } catch (error) {
       console.error('Error loading products:', error)
-      // Fallback to sample data
-      setProducts(getSampleProducts())
     } finally {
       setLoading(false)
     }
   }
 
-  const getSampleProducts = () => {
-    return [
-      {
-        id: 1,
-        name: 'Radiant Glow Foundation',
-        price: '₹899',
-        rating: 4.8,
-        reviews: 156,
-        description: 'Natural coverage foundation with SPF 30 protection',
-        category: 'face',
-        image: '/assets/products/foundation.jpg'
-      },
-      {
-        id: 2,
-        name: 'Himalayan Clay Face Mask',
-        price: '₹549',
-        rating: 4.9,
-        reviews: 203,
-        description: 'Deep cleansing mask with natural Himalayan clay',
-        category: 'face',
-        image: '/assets/products/face-mask.jpg'
-      },
-      {
-        id: 3,
-        name: 'Vitamin C Brightening Serum',
-        price: '₹1299',
-        rating: 4.7,
-        reviews: 89,
-        description: 'Brightening serum with 20% Vitamin C for radiant skin',
-        category: 'face',
-        image: '/assets/products/vitamin-c-serum.jpg'
-      },
-      {
-        id: 4,
-        name: 'Organic Tinted Lip Balm',
-        price: '₹299',
-        rating: 4.6,
-        reviews: 124,
-        description: 'Nourishing lip balm with natural tint and SPF protection',
-        category: 'lips',
-        image: '/assets/products/lip-balm.jpg'
-      },
-      {
-        id: 5,
-        name: 'Matte Liquid Lipstick',
-        price: '₹699',
-        rating: 4.5,
-        reviews: 178,
-        description: 'Long-lasting matte lipstick in vibrant shades',
-        category: 'lips',
-        image: '/assets/products/liquid-lipstick.jpg'
-      },
-      {
-        id: 6,
-        name: 'Rose & Hibiscus Toner',
-        price: '₹499',
-        rating: 4.8,
-        reviews: 267,
-        description: 'Hydrating toner with rose water and hibiscus extract',
-        category: 'skincare',
-        image: '/assets/products/toner.jpg'
-      },
-      {
-        id: 7,
-        name: 'Niacinamide + Zinc Serum',
-        price: '₹799',
-        rating: 4.9,
-        reviews: 145,
-        description: 'Pore-minimizing serum for oily and acne-prone skin',
-        category: 'skincare',
-        image: '/assets/products/niacinamide-serum.jpg'
-      },
-      {
-        id: 8,
-        name: 'Argan Oil Hair Mask',
-        price: '₹649',
-        rating: 4.7,
-        reviews: 198,
-        description: 'Deep conditioning hair mask with pure Moroccan Argan oil',
-        category: 'hair',
-        image: '/assets/products/hair-mask.jpg'
-      },
-      {
-        id: 9,
-        name: 'Herbal Hair Growth Serum',
-        price: '₹999',
-        rating: 4.6,
-        reviews: 87,
-        description: 'Stimulating hair serum with natural herbs for growth',
-        category: 'hair',
-        image: '/assets/products/hair-serum.jpg'
-      },
-      {
-        id: 10,
-        name: 'Lavender Body Butter',
-        price: '₹449',
-        rating: 4.8,
-        reviews: 156,
-        description: 'Rich moisturizing body butter with calming lavender',
-        category: 'body',
-        image: '/assets/products/body-butter.jpg'
-      },
-      {
-        id: 11,
-        name: 'Exfoliating Body Scrub',
-        price: '₹599',
-        rating: 4.7,
-        reviews: 134,
-        description: 'Gentle exfoliating scrub with sea salt and essential oils',
-        category: 'body',
-        image: '/assets/products/body-scrub.jpg'
+  const applyFilters = () => {
+    let filtered = [...products]
+
+    // Apply search filter
+    if (searchQuery.trim()) {
+      filtered = searchProducts(searchQuery)
+    }
+
+    // Apply category filter
+    if (selectedCategory) {
+      filtered = filtered.filter(product => product.category === selectedCategory)
+    }
+
+    // Apply price filter
+    if (priceRange) {
+      filtered = filtered.filter(product => {
+        const price = parseInt(product.price.replace('₹', ''))
+        switch (priceRange) {
+          case '0-500':
+            return price <= 500
+          case '500-800':
+            return price > 500 && price <= 800
+          case '800-1200':
+            return price > 800 && price <= 1200
+          case '1200+':
+            return price > 1200
+          default:
+            return true
+        }
+      })
+    }
+
+    // Apply rating filter
+    if (minRating) {
+      const minRatingValue = parseFloat(minRating)
+      filtered = filtered.filter(product => product.rating >= minRatingValue)
+    }
+
+    // Apply sorting
+    filtered.sort((a, b) => {
+      switch (sortBy) {
+        case 'name':
+          return a.name.localeCompare(b.name)
+        case 'price-low':
+          return parseInt(a.price.replace('₹', '')) - parseInt(b.price.replace('₹', ''))
+        case 'price-high':
+          return parseInt(b.price.replace('₹', '')) - parseInt(a.price.replace('₹', ''))
+        case 'rating':
+          return b.rating - a.rating
+        case 'newest':
+          return b.id - a.id
+        default:
+          return 0
       }
-    ]
+    })
+
+    setFilteredProducts(filtered)
   }
 
-  const handleFilterChange = (key, value) => {
-    const newFilters = { ...filters, [key]: value }
-    setFilters(newFilters)
-    
-    // Update URL params
-    const newSearchParams = new URLSearchParams()
-    if (newFilters.search) newSearchParams.set('search', newFilters.search)
-    if (newFilters.category) newSearchParams.set('category', newFilters.category)
-    setSearchParams(newSearchParams)
+  const handleSearch = (e) => {
+    e.preventDefault()
+    applyFilters()
   }
 
   const handleViewDetails = (product) => {
-    // Navigate to product detail page
-    window.location.href = `/products/${product.id}`
+    // You can implement a modal or navigate to product detail page
+    console.log('View details for:', product)
   }
 
-  const filteredProducts = products.filter(product => {
-    if (filters.search && !product.name.toLowerCase().includes(filters.search.toLowerCase())) {
-      return false
-    }
-    if (filters.category && product.category !== filters.category) {
-      return false
-    }
-    return true
-  })
+  const clearFilters = () => {
+    setSearchQuery('')
+    setSelectedCategory('')
+    setPriceRange('')
+    setMinRating('')
+    setSortBy('name')
+  }
 
   return (
     <div className="min-h-screen bg-[var(--color-surface)]">
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-[var(--brand-primary)] mb-4">
-            {filters.category ? `${filters.category.charAt(0).toUpperCase() + filters.category.slice(1)} Products` : 'All Products'}
+          <h1 className="text-3xl font-bold text-[var(--brand-primary)] mb-2">
+            Our Products
           </h1>
           <p className="text-gray-600">
-            {filteredProducts.length} products found
+            Discover our complete range of natural beauty products
           </p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
           {/* Filters Sidebar */}
           <div className="lg:col-span-1">
-            <div className="bg-white rounded-lg p-6 shadow-sm">
-              <h3 className="text-lg font-semibold text-[var(--brand-primary)] mb-4 flex items-center">
-                <Filter size={20} className="mr-2" />
-                Filters
-              </h3>
+            <div className="bg-white rounded-lg p-6 shadow-sm sticky top-24">
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-lg font-semibold text-[var(--brand-primary)]">
+                  Filters
+                </h3>
+                <button
+                  onClick={clearFilters}
+                  className="text-sm text-[var(--brand-primary)] hover:underline"
+                >
+                  Clear All
+                </button>
+              </div>
 
               {/* Search */}
               <div className="mb-6">
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Search
+                  Search Products
                 </label>
-                <div className="relative">
+                <form onSubmit={handleSearch} className="relative">
                   <input
                     type="text"
-                    value={filters.search}
-                    onChange={(e) => handleFilterChange('search', e.target.value)}
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
                     placeholder="Search products..."
-                    className="w-full px-4 py-2 pr-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--brand-primary)]"
+                    className="w-full px-4 py-2 pr-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--brand-primary)] focus:border-transparent"
                   />
-                  <Search size={20} className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-                </div>
+                  <button
+                    type="submit"
+                    className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-[var(--brand-primary)]"
+                  >
+                    <Search size={20} />
+                  </button>
+                </form>
               </div>
 
               {/* Category Filter */}
@@ -273,11 +213,11 @@ const Products = () => {
                   Category
                 </label>
                 <select
-                  value={filters.category}
-                  onChange={(e) => handleFilterChange('category', e.target.value)}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--brand-primary)]"
+                  value={selectedCategory}
+                  onChange={(e) => setSelectedCategory(e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--brand-primary)] focus:border-transparent"
                 >
-                  {categories.map(category => (
+                  {categories.map((category) => (
                     <option key={category.value} value={category.value}>
                       {category.label}
                     </option>
@@ -291,11 +231,11 @@ const Products = () => {
                   Price Range
                 </label>
                 <select
-                  value={filters.priceRange}
-                  onChange={(e) => handleFilterChange('priceRange', e.target.value)}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--brand-primary)]"
+                  value={priceRange}
+                  onChange={(e) => setPriceRange(e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--brand-primary)] focus:border-transparent"
                 >
-                  {priceRanges.map(range => (
+                  {priceRanges.map((range) => (
                     <option key={range.value} value={range.value}>
                       {range.label}
                     </option>
@@ -309,48 +249,61 @@ const Products = () => {
                   Minimum Rating
                 </label>
                 <select
-                  value={filters.rating}
-                  onChange={(e) => handleFilterChange('rating', e.target.value)}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--brand-primary)]"
+                  value={minRating}
+                  onChange={(e) => setMinRating(e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--brand-primary)] focus:border-transparent"
                 >
-                  {ratings.map(rating => (
+                  {ratingFilters.map((rating) => (
                     <option key={rating.value} value={rating.value}>
                       {rating.label}
                     </option>
                   ))}
                 </select>
               </div>
-
-              {/* Clear Filters */}
-              <button
-                onClick={() => {
-                  setFilters({ search: '', category: '', priceRange: '', rating: '' })
-                  setSearchParams({})
-                }}
-                className="w-full btn btn--outline btn--sm"
-              >
-                Clear Filters
-              </button>
             </div>
           </div>
 
           {/* Products Grid */}
           <div className="lg:col-span-3">
-            {/* View Mode Toggle */}
-            <div className="flex justify-between items-center mb-6">
-              <div className="flex items-center space-x-2">
-                <button
-                  onClick={() => setViewMode('grid')}
-                  className={`p-2 rounded-lg ${viewMode === 'grid' ? 'bg-[var(--brand-primary)] text-white' : 'bg-gray-200 text-gray-600'}`}
-                >
-                  <Grid size={20} />
-                </button>
-                <button
-                  onClick={() => setViewMode('list')}
-                  className={`p-2 rounded-lg ${viewMode === 'list' ? 'bg-[var(--brand-primary)] text-white' : 'bg-gray-200 text-gray-600'}`}
-                >
-                  <List size={20} />
-                </button>
+            {/* Toolbar */}
+            <div className="bg-white rounded-lg p-4 mb-6 shadow-sm">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <div className="flex items-center space-x-4">
+                  <span className="text-sm text-gray-600">
+                    {filteredProducts.length} products found
+                  </span>
+                </div>
+                
+                <div className="flex items-center space-x-4">
+                  {/* Sort */}
+                  <select
+                    value={sortBy}
+                    onChange={(e) => setSortBy(e.target.value)}
+                    className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--brand-primary)] focus:border-transparent"
+                  >
+                    {sortOptions.map((option) => (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
+                  </select>
+
+                  {/* View Mode */}
+                  <div className="flex border border-gray-300 rounded-lg">
+                    <button
+                      onClick={() => setViewMode('grid')}
+                      className={`p-2 ${viewMode === 'grid' ? 'bg-[var(--brand-primary)] text-white' : 'text-gray-600 hover:text-[var(--brand-primary)]'}`}
+                    >
+                      <Grid size={20} />
+                    </button>
+                    <button
+                      onClick={() => setViewMode('list')}
+                      className={`p-2 ${viewMode === 'list' ? 'bg-[var(--brand-primary)] text-white' : 'text-gray-600 hover:text-[var(--brand-primary)]'}`}
+                    >
+                      <List size={20} />
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -359,7 +312,25 @@ const Products = () => {
               <div className="flex justify-center items-center py-12">
                 <div className="spinner" />
               </div>
-            ) : filteredProducts.length > 0 ? (
+            ) : filteredProducts.length === 0 ? (
+              <div className="text-center py-12">
+                <div className="text-gray-400 mb-4">
+                  <Filter size={48} className="mx-auto" />
+                </div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                  No products found
+                </h3>
+                <p className="text-gray-600 mb-4">
+                  Try adjusting your filters or search terms
+                </p>
+                <button
+                  onClick={clearFilters}
+                  className="btn btn--primary"
+                >
+                  Clear Filters
+                </button>
+              </div>
+            ) : (
               <div className={`grid gap-6 ${
                 viewMode === 'grid' 
                   ? 'grid-cols-1 md:grid-cols-2 xl:grid-cols-3' 
@@ -372,18 +343,6 @@ const Products = () => {
                     onViewDetails={handleViewDetails}
                   />
                 ))}
-              </div>
-            ) : (
-              <div className="text-center py-12">
-                <div className="text-gray-400 mb-4">
-                  <Search size={48} className="mx-auto" />
-                </div>
-                <h3 className="text-lg font-semibold text-gray-600 mb-2">
-                  No products found
-                </h3>
-                <p className="text-gray-500">
-                  Try adjusting your filters or search terms
-                </p>
               </div>
             )}
           </div>

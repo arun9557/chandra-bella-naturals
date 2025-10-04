@@ -1,10 +1,9 @@
 import { useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { Search, ShoppingBag, Menu, X } from 'lucide-react'
+import { Search, ShoppingBag, Menu } from 'lucide-react'
 import { useCart } from '../contexts/CartContext'
 
 const Navbar = ({ onToggleMobileMenu }) => {
-  const [isSearchOpen, setIsSearchOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
   const { getTotalItems } = useCart()
   const location = useLocation()
@@ -27,37 +26,33 @@ const Navbar = ({ onToggleMobileMenu }) => {
   ]
 
   return (
-    <header className="bg-white shadow-sm sticky top-0 z-50">
-      <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between h-16">
+    <header className="navbar">
+      <div className="navbar-container">
+        <div className="navbar-content">
           {/* Logo */}
-          <Link to="/" className="flex items-center space-x-3">
+          <Link to="/" className="navbar-logo">
             <img 
               src="/assets/logo.png" 
               alt="The Chandra Bella Naturals Logo" 
-              className="h-12 w-auto"
+              className="navbar-logo-image"
             />
-            <div className="hidden sm:block">
-              <h1 className="text-xl font-bold text-[var(--brand-primary)]">
+            <div className="navbar-logo-text">
+              <h1 className="navbar-brand-name">
                 The Chandra Bella Naturals
               </h1>
-              <p className="text-sm text-[var(--brand-gray)] italic">
+              <p className="navbar-tagline">
                 Embrace Your Natural Beauty
               </p>
             </div>
           </Link>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center space-x-8">
+          <nav className="navbar-nav">
             {navItems.map((item) => (
               <Link
                 key={item.path}
                 to={item.path}
-                className={`font-medium transition-colors ${
-                  isActive(item.path)
-                    ? 'text-[var(--brand-primary)]'
-                    : 'text-gray-700 hover:text-[var(--brand-primary)]'
-                }`}
+                className={`navbar-link ${isActive(item.path) ? 'navbar-link--active' : ''}`}
               >
                 {item.label}
               </Link>
@@ -65,20 +60,20 @@ const Navbar = ({ onToggleMobileMenu }) => {
           </nav>
 
           {/* Search and Cart */}
-          <div className="flex items-center space-x-4">
+          <div className="navbar-actions">
             {/* Search */}
-            <div className="relative">
-              <form onSubmit={handleSearch} className="flex items-center">
+            <div className="navbar-search">
+              <form onSubmit={handleSearch} className="search-form">
                 <input
                   type="text"
                   placeholder="Search products..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-64 px-4 py-2 pr-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--brand-primary)] focus:border-transparent"
+                  className="search-input"
                 />
                 <button
                   type="submit"
-                  className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-[var(--brand-primary)]"
+                  className="search-button"
                 >
                   <Search size={20} />
                 </button>
@@ -88,11 +83,11 @@ const Navbar = ({ onToggleMobileMenu }) => {
             {/* Cart */}
             <Link
               to="/cart"
-              className="relative p-2 text-gray-700 hover:text-[var(--brand-primary)] transition-colors"
+              className="navbar-cart"
             >
               <ShoppingBag size={24} />
               {getTotalItems() > 0 && (
-                <span className="absolute -top-1 -right-1 bg-[var(--brand-accent)] text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                <span className="cart-badge">
                   {getTotalItems()}
                 </span>
               )}
@@ -101,13 +96,195 @@ const Navbar = ({ onToggleMobileMenu }) => {
             {/* Mobile Menu Button */}
             <button
               onClick={onToggleMobileMenu}
-              className="md:hidden p-2 text-gray-700 hover:text-[var(--brand-primary)]"
+              className="navbar-mobile-btn"
             >
               <Menu size={24} />
             </button>
           </div>
         </div>
       </div>
+
+      <style>{`
+        .navbar {
+          background: var(--brand-white);
+          box-shadow: 0 2px 10px rgba(139, 94, 131, 0.1);
+          position: sticky;
+          top: 0;
+          z-index: 50;
+        }
+
+        .navbar-container {
+          max-width: 1200px;
+          margin: 0 auto;
+          padding: 0 1rem;
+        }
+
+        .navbar-content {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          height: 4rem;
+        }
+
+        .navbar-logo {
+          display: flex;
+          align-items: center;
+          gap: 0.75rem;
+          text-decoration: none;
+        }
+
+        .navbar-logo-image {
+          height: 3rem;
+          width: auto;
+        }
+
+        .navbar-logo-text {
+          display: none;
+        }
+
+        @media (min-width: 640px) {
+          .navbar-logo-text {
+            display: block;
+          }
+        }
+
+        .navbar-brand-name {
+          font-size: 1.25rem;
+          font-weight: var(--font-weight-bold);
+          color: var(--brand-primary);
+          margin: 0;
+        }
+
+        .navbar-tagline {
+          font-size: 0.875rem;
+          color: var(--brand-gray);
+          font-style: italic;
+          margin: 0;
+        }
+
+        .navbar-nav {
+          display: none;
+          align-items: center;
+          gap: 2rem;
+        }
+
+        @media (min-width: 768px) {
+          .navbar-nav {
+            display: flex;
+          }
+        }
+
+        .navbar-link {
+          font-weight: var(--font-weight-medium);
+          color: var(--color-text);
+          text-decoration: none;
+          transition: color var(--transition-fast);
+        }
+
+        .navbar-link:hover,
+        .navbar-link--active {
+          color: var(--brand-primary);
+        }
+
+        .navbar-actions {
+          display: flex;
+          align-items: center;
+          gap: 1rem;
+        }
+
+        .navbar-search {
+          position: relative;
+        }
+
+        .search-form {
+          display: flex;
+          align-items: center;
+        }
+
+        .search-input {
+          width: 16rem;
+          padding: 0.5rem 2.5rem 0.5rem 1rem;
+          border: 1px solid var(--brand-secondary);
+          border-radius: var(--radius-base);
+          font-size: 1rem;
+          transition: border-color var(--transition-fast);
+        }
+
+        .search-input:focus {
+          outline: none;
+          border-color: var(--brand-primary);
+        }
+
+        .search-button {
+          position: absolute;
+          right: 0.5rem;
+          top: 50%;
+          transform: translateY(-50%);
+          background: none;
+          border: none;
+          color: var(--brand-gray);
+          cursor: pointer;
+          padding: 0.25rem;
+        }
+
+        .search-button:hover {
+          color: var(--brand-primary);
+        }
+
+        .navbar-cart {
+          position: relative;
+          padding: 0.5rem;
+          color: var(--color-text);
+          text-decoration: none;
+          transition: color var(--transition-fast);
+        }
+
+        .navbar-cart:hover {
+          color: var(--brand-primary);
+        }
+
+        .cart-badge {
+          position: absolute;
+          top: -0.25rem;
+          right: -0.25rem;
+          background: var(--brand-accent);
+          color: var(--brand-white);
+          border-radius: 50%;
+          width: 1.25rem;
+          height: 1.25rem;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 0.75rem;
+          font-weight: var(--font-weight-bold);
+        }
+
+        .navbar-mobile-btn {
+          display: block;
+          padding: 0.5rem;
+          color: var(--color-text);
+          background: none;
+          border: none;
+          cursor: pointer;
+          transition: color var(--transition-fast);
+        }
+
+        .navbar-mobile-btn:hover {
+          color: var(--brand-primary);
+        }
+
+        @media (min-width: 768px) {
+          .navbar-mobile-btn {
+            display: none;
+          }
+        }
+
+        @media (max-width: 640px) {
+          .navbar-search {
+            display: none;
+          }
+        }
+      `}</style>
     </header>
   )
 }

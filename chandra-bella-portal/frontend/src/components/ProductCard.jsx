@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
 import { Star, ShoppingCart, Eye } from 'lucide-react'
 import { useCart } from '../contexts/CartContext'
 
@@ -26,20 +25,20 @@ const ProductCard = ({ product, onViewDetails }) => {
 
     for (let i = 0; i < fullStars; i++) {
       stars.push(
-        <Star key={i} size={14} className="fill-yellow-400 text-yellow-400" />
+        <Star key={i} size={14} className="star-filled" />
       )
     }
 
     if (hasHalfStar) {
       stars.push(
-        <Star key="half" size={14} className="fill-yellow-400 text-yellow-400" />
+        <Star key="half" size={14} className="star-filled" />
       )
     }
 
     const remainingStars = 5 - fullStars - (hasHalfStar ? 1 : 0)
     for (let i = 0; i < remainingStars; i++) {
       stars.push(
-        <Star key={`empty-${i}`} size={14} className="text-gray-300" />
+        <Star key={`empty-${i}`} size={14} className="star-empty" />
       )
     }
 
@@ -47,79 +46,79 @@ const ProductCard = ({ product, onViewDetails }) => {
   }
 
   return (
-    <div className="group card hover:shadow-lg transition-all duration-300">
+    <div className="product-card">
       {/* Product Image */}
-      <div className="relative overflow-hidden">
-        <div className="aspect-square bg-gradient-to-br from-[var(--brand-secondary)] to-[var(--brand-accent)] flex items-center justify-center text-white font-medium text-lg">
+      <div className="product-image-container">
+        <div className="product-image-placeholder">
           {product.name}
         </div>
         
         {/* Overlay Actions */}
-        <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-all duration-300 flex items-center justify-center space-x-2">
+        <div className="product-overlay">
           <button
             onClick={(e) => {
               e.preventDefault()
               e.stopPropagation()
               onViewDetails(product)
             }}
-            className="opacity-0 group-hover:opacity-100 transform translate-y-4 group-hover:translate-y-0 transition-all duration-300 bg-white text-[var(--brand-primary)] p-2 rounded-full hover:bg-[var(--brand-primary)] hover:text-white"
+            className="product-overlay-btn product-overlay-btn--view"
           >
             <Eye size={20} />
           </button>
           <button
             onClick={handleAddToCart}
             disabled={isLoading}
-            className="opacity-0 group-hover:opacity-100 transform translate-y-4 group-hover:translate-y-0 transition-all duration-300 bg-[var(--brand-primary)] text-white p-2 rounded-full hover:bg-[var(--brand-dark)] disabled:opacity-50"
+            className="product-overlay-btn product-overlay-btn--cart"
           >
             <ShoppingCart size={20} />
           </button>
         </div>
 
         {/* Category Badge */}
-        <div className="absolute top-2 left-2">
-          <span className="bg-[var(--brand-primary)] text-white text-xs px-2 py-1 rounded-full capitalize">
+        <div className="product-category-badge">
+          <span className="badge badge--category">
             {product.category}
           </span>
         </div>
       </div>
 
       {/* Product Info */}
-      <div className="p-4">
-        <h3 className="font-semibold text-gray-900 mb-2 line-clamp-2">
+      <div className="product-info">
+        <h3 className="product-title">
           {product.name}
         </h3>
         
         {/* Rating */}
-        <div className="flex items-center space-x-1 mb-2">
-          <div className="flex">
+        <div className="product-rating">
+          <div className="stars">
             {renderStars(product.rating)}
           </div>
-          <span className="text-sm text-gray-500">
+          <span className="rating-text">
             ({product.reviews})
           </span>
         </div>
 
         {/* Price */}
-        <div className="text-lg font-bold text-[var(--brand-primary)] mb-3">
+        <div className="product-price">
           {product.price}
         </div>
 
         {/* Description */}
-        <p className="text-sm text-gray-600 mb-4 line-clamp-2">
+        <p className="product-description">
           {product.description}
         </p>
 
         {/* Actions */}
-        <div className="flex space-x-2">
+        <div className="product-actions">
           <button
             onClick={handleAddToCart}
             disabled={isLoading}
-            className={`flex-1 btn btn--primary btn--sm ${
+            className={`btn btn--primary btn--sm product-add-btn ${
               isInCart(product.id) ? 'btn--secondary' : ''
             }`}
           >
             {isLoading ? (
-              <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+              <div className="loading-spinner-small" />
             ) : (
               <>
                 <ShoppingCart size={16} />
@@ -136,6 +135,192 @@ const ProductCard = ({ product, onViewDetails }) => {
           </button>
         </div>
       </div>
+
+      <style>{`
+        .product-card {
+          background: var(--color-background);
+          border-radius: var(--radius-lg);
+          overflow: hidden;
+          box-shadow: var(--shadow-sm);
+          transition: all var(--transition-base);
+          cursor: pointer;
+          border: 1px solid var(--brand-light-purple);
+          position: relative;
+        }
+
+        .product-card:hover {
+          transform: translateY(-2px);
+          box-shadow: var(--shadow-lg);
+          border-color: var(--color-accent);
+        }
+
+        .product-image-container {
+          position: relative;
+          overflow: hidden;
+        }
+
+        .product-image-placeholder {
+          aspect-ratio: 1;
+          background: var(--brand-gradient);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: var(--brand-white);
+          font-weight: var(--font-weight-medium);
+          font-size: 1.125rem;
+        }
+
+        .product-overlay {
+          position: absolute;
+          inset: 0;
+          background: rgba(0, 0, 0, 0);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: var(--space-2);
+          transition: all var(--transition-base);
+        }
+
+        .product-card:hover .product-overlay {
+          background: rgba(0, 0, 0, 0.3);
+        }
+
+        .product-overlay-btn {
+          opacity: 0;
+          transform: translateY(16px);
+          transition: all var(--transition-base);
+          background: var(--brand-white);
+          color: var(--brand-primary);
+          border: none;
+          border-radius: 50%;
+          width: 40px;
+          height: 40px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+        }
+
+        .product-card:hover .product-overlay-btn {
+          opacity: 1;
+          transform: translateY(0);
+        }
+
+        .product-overlay-btn--cart {
+          background: var(--brand-primary);
+          color: var(--brand-white);
+        }
+
+        .product-overlay-btn--cart:hover {
+          background: var(--brand-dark);
+        }
+
+        .product-overlay-btn--view:hover {
+          background: var(--brand-primary);
+          color: var(--brand-white);
+        }
+
+        .product-overlay-btn:disabled {
+          opacity: 0.5;
+          cursor: not-allowed;
+        }
+
+        .product-category-badge {
+          position: absolute;
+          top: var(--space-2);
+          left: var(--space-2);
+        }
+
+        .badge {
+          background: var(--brand-primary);
+          color: var(--brand-white);
+          font-size: 0.75rem;
+          padding: 0.25rem 0.5rem;
+          border-radius: var(--radius-full);
+          text-transform: capitalize;
+        }
+
+        .product-info {
+          padding: var(--space-4);
+        }
+
+        .product-title {
+          font-weight: var(--font-weight-semibold);
+          color: var(--color-text);
+          margin-bottom: var(--space-2);
+          line-height: 1.4;
+          display: -webkit-box;
+          -webkit-line-clamp: 2;
+          -webkit-box-orient: vertical;
+          overflow: hidden;
+        }
+
+        .product-rating {
+          display: flex;
+          align-items: center;
+          gap: var(--space-1);
+          margin-bottom: var(--space-2);
+        }
+
+        .stars {
+          display: flex;
+        }
+
+        .star-filled {
+          color: #FFD700;
+          fill: #FFD700;
+        }
+
+        .star-empty {
+          color: #E0E0E0;
+        }
+
+        .rating-text {
+          font-size: var(--font-size-sm);
+          color: var(--color-text-secondary);
+        }
+
+        .product-price {
+          font-size: var(--font-size-lg);
+          font-weight: var(--font-weight-bold);
+          color: var(--brand-primary);
+          margin-bottom: var(--space-3);
+        }
+
+        .product-description {
+          font-size: var(--font-size-sm);
+          color: var(--color-text-secondary);
+          line-height: 1.5;
+          margin-bottom: var(--space-4);
+          display: -webkit-box;
+          -webkit-line-clamp: 2;
+          -webkit-box-orient: vertical;
+          overflow: hidden;
+        }
+
+        .product-actions {
+          display: flex;
+          gap: var(--space-2);
+        }
+
+        .product-add-btn {
+          flex: 1;
+        }
+
+        .loading-spinner-small {
+          width: 16px;
+          height: 16px;
+          border: 2px solid transparent;
+          border-top: 2px solid currentColor;
+          border-radius: 50%;
+          animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+      `}</style>
     </div>
   )
 }

@@ -2,12 +2,11 @@ import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { ArrowRight, Leaf, Heart, Recycle, Award } from 'lucide-react'
 import ProductCard from '../components/ProductCard'
-import { productsAPI } from '../services/api'
+import { getFeaturedProducts } from '../data/productData'
 
 const Home = () => {
   const [featuredProducts, setFeaturedProducts] = useState([])
   const [loading, setLoading] = useState(true)
-  const [selectedProduct, setSelectedProduct] = useState(null)
 
   useEffect(() => {
     loadFeaturedProducts()
@@ -16,60 +15,18 @@ const Home = () => {
   const loadFeaturedProducts = async () => {
     try {
       setLoading(true)
-      const response = await productsAPI.getFeatured()
-      setFeaturedProducts(response.data)
+      // Simulate API call delay
+      await new Promise(resolve => setTimeout(resolve, 500))
+      const products = getFeaturedProducts()
+      setFeaturedProducts(products)
     } catch (error) {
       console.error('Error loading featured products:', error)
-      // Fallback to sample data if API fails
-      setFeaturedProducts([
-        {
-          id: 1,
-          name: 'Radiant Glow Foundation',
-          price: '₹899',
-          rating: 4.8,
-          reviews: 156,
-          description: 'Natural coverage foundation with SPF 30 protection',
-          category: 'face',
-          image: '/assets/products/foundation.jpg'
-        },
-        {
-          id: 2,
-          name: 'Matte Liquid Lipstick',
-          price: '₹699',
-          rating: 4.5,
-          reviews: 178,
-          description: 'Long-lasting matte lipstick in vibrant shades',
-          category: 'lips',
-          image: '/assets/products/lipstick.jpg'
-        },
-        {
-          id: 3,
-          name: 'Rose & Hibiscus Toner',
-          price: '₹499',
-          rating: 4.8,
-          reviews: 267,
-          description: 'Hydrating toner with rose water and hibiscus extract',
-          category: 'skincare',
-          image: '/assets/products/toner.jpg'
-        },
-        {
-          id: 4,
-          name: 'Argan Oil Hair Mask',
-          price: '₹649',
-          rating: 4.7,
-          reviews: 198,
-          description: 'Deep conditioning hair mask with pure Moroccan Argan oil',
-          category: 'hair',
-          image: '/assets/products/hair-mask.jpg'
-        }
-      ])
     } finally {
       setLoading(false)
     }
   }
 
   const handleViewDetails = (product) => {
-    setSelectedProduct(product)
     // You can implement a modal or navigate to product detail page
     console.log('View details for:', product)
   }

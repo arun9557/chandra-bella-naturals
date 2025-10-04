@@ -1,255 +1,253 @@
 # The Chandra Bella Naturals - Frontend
 
-Modern React frontend for The Chandra Bella Naturals e-commerce platform.
+A modern, responsive e-commerce website for natural beauty products built with React and Vite.
 
-## 🚀 Quick Start
+## 🚀 Features
 
-### Prerequisites
-- Node.js (v16 or higher)
-- npm or yarn
+- **Modern React Architecture**: Built with React 18, React Router, and Context API
+- **Responsive Design**: Mobile-first approach with beautiful UI/UX
+- **Product Management**: Dynamic product listings, search, and filtering
+- **Shopping Cart**: Full cart functionality with persistent storage
+- **Checkout Flow**: Complete checkout process with form validation
+- **Product Details**: Detailed product pages with image galleries
+- **Brand Pages**: About Us and Contact pages with forms
+- **Performance Optimized**: Fast loading with Vite bundling
+- **Accessibility**: ARIA labels and keyboard navigation support
 
-### Installation
+## 🎨 Design System
 
-1. **Install Dependencies**
-   ```bash
-   npm install
-   ```
+- **Color Scheme**: Purple and lavender with gray accents
+- **Typography**: Inter font family for modern readability
+- **Components**: Reusable, modular React components
+- **Icons**: Lucide React for consistent iconography
+- **Animations**: Smooth transitions and hover effects
 
-2. **Start Development Server**
-   ```bash
-   npm run dev
-   ```
+## 🛠️ Tech Stack
 
-3. **Open in Browser**
-   ```
-   http://localhost:3000
-   ```
+- **Frontend**: React 18, React Router DOM
+- **Build Tool**: Vite
+- **Styling**: CSS3 with CSS Variables
+- **State Management**: React Context API
+- **Icons**: Lucide React
+- **Notifications**: React Hot Toast
+- **HTTP Client**: Axios (ready for API integration)
 
 ## 📁 Project Structure
 
 ```
 frontend/
 ├── public/
-│   └── assets/              # Static assets (images, logos)
+│   └── assets/
+│       └── logo.png
 ├── src/
-│   ├── components/          # Reusable UI components
-│   │   ├── Layout.jsx      # Main layout wrapper
-│   │   ├── Navbar.jsx      # Navigation header
-│   │   ├── Footer.jsx      # Site footer
-│   │   ├── MobileMenu.jsx  # Mobile navigation
-│   │   └── ProductCard.jsx # Product display card
-│   ├── pages/              # Page components
-│   │   ├── Home.jsx        # Homepage
-│   │   ├── About.jsx       # About page
-│   │   ├── Contact.jsx     # Contact page
-│   │   ├── Products.jsx    # Product listing
-│   │   ├── ProductDetail.jsx # Product detail page
-│   │   ├── Cart.jsx        # Shopping cart
-│   │   └── Checkout.jsx    # Checkout process
-│   ├── contexts/           # React contexts
-│   │   └── CartContext.jsx # Shopping cart state
-│   ├── services/           # API services
-│   │   └── api.js          # API client configuration
-│   ├── styles/             # CSS styles
-│   │   └── global.css      # Global styles and variables
-│   ├── App.jsx             # Main app component
-│   ├── main.jsx            # App entry point
-│   └── index.css           # Base styles
+│   ├── components/
+│   │   ├── Layout.jsx
+│   │   ├── Navbar.jsx
+│   │   ├── MobileMenu.jsx
+│   │   ├── Footer.jsx
+│   │   └── ProductCard.jsx
+│   ├── contexts/
+│   │   └── CartContext.jsx
+│   ├── data/
+│   │   └── productData.js
+│   ├── pages/
+│   │   ├── Home.jsx
+│   │   ├── Products.jsx
+│   │   ├── ProductDetail.jsx
+│   │   ├── About.jsx
+│   │   ├── Contact.jsx
+│   │   ├── Cart.jsx
+│   │   └── Checkout.jsx
+│   ├── styles/
+│   │   └── global.css
+│   ├── App.jsx
+│   ├── main.jsx
+│   └── index.css
+├── index.html
 ├── package.json
 ├── vite.config.js
-└── index.html
+└── README.md
 ```
 
-## 🎨 Design System
+## 🚀 Getting Started
 
-### Color Palette
-- **Primary**: #8B5E83 (Deep Purple)
-- **Secondary**: #E6E6FA (Lavender)
-- **Accent**: #9370DB (Medium Purple)
-- **Light Purple**: #D8BFD8 (Light Lavender)
-- **Gray**: #808080 (Medium Gray)
-- **Light Gray**: #F5F5F5 (Light Gray)
+### Prerequisites
 
-### Typography
-- **Font Family**: Inter, system fonts
-- **Headings**: 600 weight
-- **Body**: 400 weight
-- **Small Text**: 500 weight
+- Node.js (v16 or higher)
+- npm or yarn
 
-### Components
-- **Buttons**: Primary, Secondary, Outline variants
-- **Cards**: Product cards, info cards
-- **Forms**: Input fields, validation
-- **Navigation**: Header, mobile menu
-- **Layout**: Grid system, containers
+### Installation
 
-## 🛠️ Available Scripts
+1. **Install dependencies:**
+   ```bash
+   npm install
+   ```
 
-```bash
-# Development
-npm run dev          # Start dev server
-npm run build        # Build for production
-npm run preview      # Preview production build
-npm run lint         # Run ESLint
+2. **Start development server:**
+   ```bash
+   npm run dev
+   ```
 
-# Production
-npm run build        # Create optimized build
-```
+3. **Open your browser:**
+   Navigate to `http://localhost:3000`
 
-## 🔧 Configuration
+### Available Scripts
 
-### Vite Configuration
-- **Port**: 3000
-- **API Proxy**: /api → http://localhost:5000
-- **Build Output**: dist/
-- **Source Maps**: Enabled
-
-### Environment Variables
-```env
-VITE_API_URL=http://localhost:5000/api
-```
-
-## 📱 Responsive Design
-
-### Breakpoints
-- **Mobile**: 320px - 767px
-- **Tablet**: 768px - 1023px
-- **Desktop**: 1024px+
-
-### Mobile Features
-- **Touch-friendly** buttons and inputs
-- **Swipe gestures** for navigation
-- **Optimized images** for fast loading
-- **Collapsible** mobile menu
+- `npm run dev` - Start development server
+- `npm run build` - Build for production
+- `npm run preview` - Preview production build
+- `npm run lint` - Run ESLint
 
 ## 🎯 Key Features
 
-### Shopping Experience
-- **Product Catalog** with filtering and search
-- **Shopping Cart** with persistent storage
-- **Product Details** with image gallery
-- **Checkout Flow** with form validation
-- **Order Confirmation** with tracking
+### Home Page
+- Hero section with brand logo and call-to-action
+- Featured products showcase
+- Brand values and mission
+- Product categories grid
+- Newsletter signup
 
-### User Interface
-- **Modern Design** with purple theme
-- **Smooth Animations** and transitions
-- **Loading States** for better UX
-- **Error Handling** with user feedback
-- **Accessibility** features
+### Products Page
+- Advanced filtering (category, price, rating)
+- Search functionality
+- Sorting options
+- Grid/List view toggle
+- Responsive product cards
 
-### Performance
-- **Code Splitting** for faster loading
-- **Image Optimization** with proper sizing
-- **Lazy Loading** for better performance
-- **Caching** for API responses
+### Product Detail Page
+- High-quality product images
+- Detailed product information
+- Ingredients and usage instructions
+- Quantity selector
+- Add to cart functionality
+- Wishlist and share options
 
-## 🔌 API Integration
+### Shopping Cart
+- Persistent cart storage
+- Quantity management
+- Item removal
+- Order summary
+- Secure checkout flow
 
-### Services
-- **Products API** - Product management
-- **Orders API** - Order processing
-- **Contact API** - Contact form handling
-- **Newsletter API** - Subscription management
+### Checkout Process
+- Multi-step checkout form
+- Shipping information
+- Payment method selection
+- Form validation
+- Order confirmation
 
-### Error Handling
-- **Network Errors** with retry logic
-- **Validation Errors** with field highlighting
-- **User Feedback** with toast notifications
+### About Us Page
+- Company story and mission
+- Team information
+- Values and process
+- Brand commitment
 
-## 🧪 Testing
+### Contact Page
+- Contact information
+- Contact form with validation
+- Newsletter signup
+- Social media links
 
-### Test Structure
+## 🎨 Design System
+
+### Colors
+- **Primary**: #8B5E83 (Deep Purple)
+- **Secondary**: #E6E6FA (Lavender)
+- **Accent**: #9370DB (Medium Purple)
+- **Light Purple**: #D8BFD8
+- **Gray**: #808080
+- **Light Gray**: #F5F5F5
+
+### Typography
+- **Font Family**: Inter, system fonts
+- **Headings**: Bold, 600 weight
+- **Body**: Regular, 400 weight
+- **Small Text**: 14px base size
+
+### Components
+- **Buttons**: Primary, secondary, outline variants
+- **Cards**: Product cards, info cards
+- **Forms**: Input fields, selectors, checkboxes
+- **Navigation**: Header, mobile menu, breadcrumbs
+
+## 🔧 Customization
+
+### Adding New Products
+Edit `src/data/productData.js` to add new products:
+
+```javascript
+{
+  id: 12,
+  name: "New Product",
+  price: "₹999",
+  image: "/assets/products/new-product.jpg",
+  rating: 4.5,
+  reviews: 100,
+  description: "Product description",
+  ingredients: ["Ingredient 1", "Ingredient 2"],
+  usage: "How to use",
+  category: "face"
+}
 ```
-src/
-├── __tests__/           # Test files
-├── components/          # Component tests
-├── pages/              # Page tests
-└── utils/              # Utility tests
-```
 
-### Running Tests
-```bash
-npm test                 # Run all tests
-npm run test:watch      # Watch mode
-npm run test:coverage   # Coverage report
-```
-
-## 🚀 Deployment
-
-### Build Process
-1. **Install Dependencies**: `npm install`
-2. **Build Project**: `npm run build`
-3. **Deploy**: Upload `dist/` folder
-
-### Deployment Platforms
-- **Vercel** (Recommended)
-- **Netlify**
-- **GitHub Pages**
-- **AWS S3 + CloudFront**
-
-### Environment Setup
-```bash
-# Production environment
-VITE_API_URL=https://your-api-domain.com/api
-```
-
-## 🎨 Customization
-
-### Adding New Pages
-1. Create component in `src/pages/`
-2. Add route in `src/App.jsx`
-3. Update navigation in `src/components/Navbar.jsx`
-
-### Styling Changes
-1. Update CSS variables in `src/styles/global.css`
-2. Modify component styles
-3. Add new utility classes
+### Styling
+- Global styles: `src/styles/global.css`
+- Component styles: Inline styles with CSS variables
+- Responsive breakpoints: Mobile-first approach
 
 ### API Integration
-1. Add new endpoints in `src/services/api.js`
-2. Create service functions
-3. Use in components with proper error handling
+The project is ready for backend API integration:
 
-## 🐛 Troubleshooting
+1. Replace mock data in `src/data/productData.js`
+2. Add API calls using Axios
+3. Update context providers for real data
+4. Add loading states and error handling
 
-### Common Issues
-1. **API Connection**: Check backend server is running
-2. **Build Errors**: Clear node_modules and reinstall
-3. **Styling Issues**: Check CSS variable definitions
-4. **Mobile Issues**: Test on actual devices
+## 📱 Responsive Design
 
-### Debug Mode
-```bash
-# Enable debug logging
-DEBUG=true npm run dev
-```
+- **Mobile**: 320px - 768px
+- **Tablet**: 768px - 1024px
+- **Desktop**: 1024px+
 
-## 📚 Dependencies
+All components are fully responsive with mobile-first design.
 
-### Core Dependencies
-- **React 18** - UI library
-- **React Router** - Client-side routing
-- **Axios** - HTTP client
-- **React Hot Toast** - Notifications
+## ♿ Accessibility
 
-### Development Dependencies
-- **Vite** - Build tool
-- **ESLint** - Code linting
-- **@vitejs/plugin-react** - React plugin
+- ARIA labels for screen readers
+- Keyboard navigation support
+- High contrast ratios
+- Semantic HTML structure
+- Focus management
 
-## 🤝 Contributing
+## 🚀 Performance
 
-1. **Fork** the repository
-2. **Create** a feature branch
-3. **Make** your changes
-4. **Test** thoroughly
-5. **Submit** a pull request
+- Vite for fast development and building
+- Code splitting with React Router
+- Optimized images and assets
+- Lazy loading for better performance
+- Minimal bundle size
+
+## 🔮 Future Enhancements
+
+- [ ] User authentication
+- [ ] Product reviews and ratings
+- [ ] Wishlist functionality
+- [ ] Order tracking
+- [ ] Multi-language support
+- [ ] Dark mode theme
+- [ ] PWA capabilities
+- [ ] Advanced search filters
+- [ ] Product recommendations
+- [ ] Social media integration
 
 ## 📄 License
 
-MIT License - see LICENSE file for details.
+This project is proprietary to The Chandra Bella Naturals.
+
+## 🤝 Contributing
+
+This is a private project. For any issues or suggestions, please contact the development team.
 
 ---
 
-**The Chandra Bella Naturals** - Frontend ✨
+**The Chandra Bella Naturals** - Embrace Your Natural Beauty ✨
