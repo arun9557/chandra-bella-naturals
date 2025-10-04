@@ -1,0 +1,346 @@
+import { useState } from 'react'
+import { Mail, Phone, MapPin, Send, CheckCircle } from 'lucide-react'
+import toast from 'react-hot-toast'
+import { contactAPI } from '../services/api'
+
+const Contact = () => {
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    subject: '',
+    message: '',
+    newsletter: false
+  })
+  const [errors, setErrors] = useState({})
+  const [isSubmitting, setIsSubmitting] = useState(false)
+
+  const contactInfo = [
+    {
+      icon: Mail,
+      title: 'Email',
+      value: 'hello@chandrabella.com',
+      description: 'Send us an email anytime'
+    },
+    {
+      icon: Phone,
+      title: 'Phone',
+      value: '+91 98765 43210',
+      description: 'Call us during business hours'
+    },
+    {
+      icon: MapPin,
+      title: 'Address',
+      value: '123 Beauty Lane, Mumbai, Maharashtra 400001',
+      description: 'Visit our office'
+    }
+  ]
+
+  const subjects = [
+    { value: '', label: 'Select a subject' },
+    { value: 'general', label: 'General Inquiry' },
+    { value: 'product', label: 'Product Question' },
+    { value: 'order', label: 'Order Support' },
+    { value: 'return', label: 'Returns & Exchanges' },
+    { value: 'feedback', label: 'Feedback' },
+    { value: 'other', label: 'Other' }
+  ]
+
+  const handleChange = (e) => {
+    const { name, value, type, checked } = e.target
+    setFormData(prev => ({
+      ...prev,
+      [name]: type === 'checkbox' ? checked : value
+    }))
+    
+    // Clear error when user starts typing
+    if (errors[name]) {
+      setErrors(prev => ({
+        ...prev,
+        [name]: ''
+      }))
+    }
+  }
+
+  const validateForm = () => {
+    const newErrors = {}
+
+    if (!formData.name.trim()) {
+      newErrors.name = 'Please enter your full name'
+    } else if (formData.name.trim().length < 2) {
+      newErrors.name = 'Name must be at least 2 characters'
+    }
+
+    if (!formData.email.trim()) {
+      newErrors.email = 'Please enter your email address'
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      newErrors.email = 'Please enter a valid email address'
+    }
+
+    if (!formData.subject) {
+      newErrors.subject = 'Please select a subject'
+    }
+
+    if (!formData.message.trim()) {
+      newErrors.message = 'Please enter a message'
+    } else if (formData.message.trim().length < 10) {
+      newErrors.message = 'Message must be at least 10 characters'
+    }
+
+    setErrors(newErrors)
+    return Object.keys(newErrors).length === 0
+  }
+
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    
+    if (!validateForm()) {
+      toast.error('Please correct the errors below')
+      return
+    }
+
+    setIsSubmitting(true)
+    try {
+      await contactAPI.sendMessage(formData)
+      
+      // If newsletter signup is checked
+      if (formData.newsletter) {
+        await contactAPI.subscribe(formData.email)
+      }
+
+      toast.success('Thank you for your message! We will get back to you within 24 hours.')
+      setFormData({
+        name: '',
+        email: '',
+        phone: '',
+        subject: '',
+        message: '',
+        newsletter: false
+      })
+    } catch (error) {
+      console.error('Error sending message:', error)
+      toast.error('Failed to send message. Please try again.')
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
+
+  return (
+    <div className="min-h-screen bg-[var(--color-surface)]">
+      <div className="container mx-auto px-4 py-12">
+        {/* Header */}
+        <div className="text-center mb-12">
+          <h1 className="text-4xl font-bold text-[var(--brand-primary)] mb-4">
+            Contact Us
+          </h1>
+          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+            We'd love to hear from you. Send us a message and we'll respond as soon as possible.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+          {/* Contact Information */}
+          <div className="space-y-8">
+            <div>
+              <h2 className="text-2xl font-bold text-[var(--brand-primary)] mb-6">
+                Get in Touch
+              </h2>
+              <p className="text-gray-600 mb-8">
+                Have a question about our products or need help with your order? 
+                We're here to help! Reach out to us through any of the channels below.
+              </p>
+            </div>
+
+            <div className="space-y-6">
+              {contactInfo.map((info, index) => (
+                <div key={index} className="flex items-start space-x-4">
+                  <div className="flex-shrink-0 w-12 h-12 bg-[var(--brand-secondary)] rounded-lg flex items-center justify-center">
+                    <info.icon size={24} className="text-[var(--brand-primary)]" />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-semibold text-[var(--brand-primary)] mb-1">
+                      {info.title}
+                    </h3>
+                    <p className="text-gray-900 font-medium mb-1">
+                      {info.value}
+                    </p>
+                    <p className="text-gray-600 text-sm">
+                      {info.description}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Social Links */}
+            <div className="pt-6 border-t border-gray-200">
+              <h3 className="text-lg font-semibold text-[var(--brand-primary)] mb-4">
+                Follow Us
+              </h3>
+              <div className="flex space-x-4">
+                {['Instagram', 'Facebook', 'Twitter', 'YouTube'].map((social) => (
+                  <a
+                    key={social}
+                    href="#"
+                    className="w-10 h-10 bg-[var(--brand-primary)] text-white rounded-full flex items-center justify-center hover:bg-[var(--brand-dark)] transition-colors"
+                  >
+                    {social.charAt(0)}
+                  </a>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Contact Form */}
+          <div className="bg-white rounded-lg p-8 shadow-sm">
+            <h2 className="text-2xl font-bold text-[var(--brand-primary)] mb-6">
+              Send us a Message
+            </h2>
+
+            <form onSubmit={handleSubmit} className="space-y-6">
+              {/* Name */}
+              <div>
+                <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
+                  Full Name *
+                </label>
+                <input
+                  type="text"
+                  id="name"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleChange}
+                  className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--brand-primary)] ${
+                    errors.name ? 'border-red-500' : 'border-gray-300'
+                  }`}
+                  placeholder="Enter your full name"
+                />
+                {errors.name && (
+                  <p className="mt-1 text-sm text-red-600">{errors.name}</p>
+                )}
+              </div>
+
+              {/* Email */}
+              <div>
+                <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+                  Email Address *
+                </label>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--brand-primary)] ${
+                    errors.email ? 'border-red-500' : 'border-gray-300'
+                  }`}
+                  placeholder="Enter your email address"
+                />
+                {errors.email && (
+                  <p className="mt-1 text-sm text-red-600">{errors.email}</p>
+                )}
+              </div>
+
+              {/* Phone */}
+              <div>
+                <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-2">
+                  Phone Number
+                </label>
+                <input
+                  type="tel"
+                  id="phone"
+                  name="phone"
+                  value={formData.phone}
+                  onChange={handleChange}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--brand-primary)]"
+                  placeholder="Enter your phone number (optional)"
+                />
+              </div>
+
+              {/* Subject */}
+              <div>
+                <label htmlFor="subject" className="block text-sm font-medium text-gray-700 mb-2">
+                  Subject *
+                </label>
+                <select
+                  id="subject"
+                  name="subject"
+                  value={formData.subject}
+                  onChange={handleChange}
+                  className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--brand-primary)] ${
+                    errors.subject ? 'border-red-500' : 'border-gray-300'
+                  }`}
+                >
+                  {subjects.map(subject => (
+                    <option key={subject.value} value={subject.value}>
+                      {subject.label}
+                    </option>
+                  ))}
+                </select>
+                {errors.subject && (
+                  <p className="mt-1 text-sm text-red-600">{errors.subject}</p>
+                )}
+              </div>
+
+              {/* Message */}
+              <div>
+                <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-2">
+                  Message *
+                </label>
+                <textarea
+                  id="message"
+                  name="message"
+                  value={formData.message}
+                  onChange={handleChange}
+                  rows={5}
+                  className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--brand-primary)] ${
+                    errors.message ? 'border-red-500' : 'border-gray-300'
+                  }`}
+                  placeholder="Please describe your inquiry in detail..."
+                />
+                {errors.message && (
+                  <p className="mt-1 text-sm text-red-600">{errors.message}</p>
+                )}
+              </div>
+
+              {/* Newsletter Signup */}
+              <div className="flex items-start space-x-3">
+                <input
+                  type="checkbox"
+                  id="newsletter"
+                  name="newsletter"
+                  checked={formData.newsletter}
+                  onChange={handleChange}
+                  className="mt-1 w-4 h-4 text-[var(--brand-primary)] border-gray-300 rounded focus:ring-[var(--brand-primary)]"
+                />
+                <label htmlFor="newsletter" className="text-sm text-gray-600">
+                  Subscribe to our newsletter for beauty tips and exclusive offers
+                </label>
+              </div>
+
+              {/* Submit Button */}
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="w-full btn btn--primary btn--lg disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {isSubmitting ? (
+                  <div className="flex items-center justify-center">
+                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
+                    Sending...
+                  </div>
+                ) : (
+                  <>
+                    <Send size={20} />
+                    Send Message
+                  </>
+                )}
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+export default Contact
