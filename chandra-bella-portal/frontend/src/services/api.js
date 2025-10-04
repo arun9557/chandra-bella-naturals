@@ -1,19 +1,21 @@
 import axios from 'axios'
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api'
+// API Configuration
+const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api'
 
+// Create axios instance with default config
 const api = axios.create({
   baseURL: API_BASE_URL,
+  timeout: 10000,
   headers: {
     'Content-Type': 'application/json',
   },
 })
 
-// Request interceptor
+// Request interceptor for adding auth token
 api.interceptors.request.use(
   (config) => {
-    // Add auth token if available
-    const token = localStorage.getItem('auth-token')
+    const token = localStorage.getItem('authToken')
     if (token) {
       config.headers.Authorization = `Bearer ${token}`
     }
@@ -24,101 +26,92 @@ api.interceptors.request.use(
   }
 )
 
-// Response interceptor
+// Response interceptor for handling errors
 api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
       // Handle unauthorized access
-      localStorage.removeItem('auth-token')
+      localStorage.removeItem('authToken')
       window.location.href = '/login'
     }
     return Promise.reject(error)
   }
 )
 
-// Products API
-export const productsAPI = {
+// API Service Functions
+export const productService = {
   // Get all products
-  getAll: (params = {}) => api.get('/products', { params }),
+  getAllProducts: () => api.get('/products'),
   
   // Get product by ID
-  getById: (id) => api.get(`/products/${id}`),
-  
-  // Get products by category
-  getByCategory: (category) => api.get(`/products/category/${category}`),
+  getProductById: (id) => api.get(`/products/${id}`),
   
   // Search products
-  search: (query) => api.get(`/products/search?q=${encodeURIComponent(query)}`),
+  searchProducts: (query) => api.get(`/products/search?q=${query}`),
+  
+  // Get products by category
+  getProductsByCategory: (category) => api.get(`/products/category/${category}`),
   
   // Get featured products
-  getFeatured: () => api.get('/products/featured'),
+  getFeaturedProducts: () => api.get('/products/featured'),
   
-  // Get product reviews
-  getReviews: (productId) => api.get(`/products/${productId}/reviews`),
-  
-  // Add product review
-  addReview: (productId, reviewData) => api.post(`/products/${productId}/reviews`, reviewData),
+  // Filter products
+  filterProducts: (filters) => api.post('/products/filter', filters),
 }
 
-// Categories API
-export const categoriesAPI = {
-  // Get all categories
-  getAll: () => api.get('/categories'),
+export const cartService = {
+  // Get user's cart
+  getCart: () => api.get('/cart'),
   
-  // Get category by ID
-  getById: (id) => api.get(`/categories/${id}`),
-}
-
-// Orders API
-export const ordersAPI = {
-  // Create new order
-  create: (orderData) => api.post('/orders', orderData),
+  // Add item to cart
+  addToCart: (productId, quantity) => api.post('/cart/add', { productId, quantity }),
   
-  // Get user orders
-  getUserOrders: () => api.get('/orders'),
+  // Update cart item quantity
+  updateCartItem: (itemId, quantity) => api.put(`/cart/items/${itemId}`, { quantity }),
   
-  // Get order by ID
-  getById: (id) => api.get(`/orders/${id}`),
-  
-  // Update order status
-  updateStatus: (id, status) => api.patch(`/orders/${id}/status`, { status }),
-}
-
-// Cart API (for server-side cart persistence)
-export const cartAPI = {
-  // Get user cart
-  get: () => api.get('/cart'),
-  
-  // Update cart
-  update: (cartData) => api.put('/cart', cartData),
+  // Remove item from cart
+  removeFromCart: (itemId) => api.delete(`/cart/items/${itemId}`),
   
   // Clear cart
-  clear: () => api.delete('/cart'),
+  clearCart: () => api.delete('/cart'),
 }
 
-// Contact API
-export const contactAPI = {
-  // Send contact message
-  sendMessage: (messageData) => api.post('/contact', messageData),
+export const orderService = {
+  // Create order
+  createOrder: (orderData) => api.post('/orders', orderData),
   
-  // Subscribe to newsletter
-  subscribe: (email) => api.post('/newsletter/subscribe', { email }),
+  // Get user's orders
+  getOrders: () => api.get('/orders'),
+  
+  // Get order by ID
+  getOrderById: (id) => api.get(`/orders/${id}`),
+  
+  // Update order status
+  updateOrderStatus: (id, status) => api.put(`/orders/${id}/status`, { status }),
 }
 
-// Auth API (for future user authentication)
-export const authAPI = {
-  // Login
+export const userService = {
+  // User authentication
   login: (credentials) => api.post('/auth/login', credentials),
-  
-  // Register
   register: (userData) => api.post('/auth/register', userData),
-  
-  // Logout
   logout: () => api.post('/auth/logout'),
   
-  // Get current user
-  getCurrentUser: () => api.get('/auth/me'),
+  // User profile
+  getProfile: () => api.get('/user/profile'),
+  updateProfile: (userData) => api.put('/user/profile', userData),
+  
+  // Password management
+  changePassword: (passwordData) => api.put('/user/password', passwordData),
+  resetPassword: (email) => api.post('/user/reset-password', { email }),
+}
+
+export const contactService = {
+  // Submit contact form
+  submitContactForm: (formData) => api.post('/contact', formData),
+  
+  // Subscribe to newsletter
+  subscribeNewsletter: (email) => api.post('/newsletter/subscribe', { email }),
 }
 
 export default api

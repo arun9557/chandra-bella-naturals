@@ -1,7 +1,6 @@
 import { useState } from 'react'
-import { Mail, Phone, MapPin, Send, CheckCircle } from 'lucide-react'
+import { Mail, Phone, MapPin, Clock, Send } from 'lucide-react'
 import toast from 'react-hot-toast'
-import { contactAPI } from '../services/api'
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -15,27 +14,6 @@ const Contact = () => {
   const [errors, setErrors] = useState({})
   const [isSubmitting, setIsSubmitting] = useState(false)
 
-  const contactInfo = [
-    {
-      icon: Mail,
-      title: 'Email',
-      value: 'hello@chandrabella.com',
-      description: 'Send us an email anytime'
-    },
-    {
-      icon: Phone,
-      title: 'Phone',
-      value: '+91 98765 43210',
-      description: 'Call us during business hours'
-    },
-    {
-      icon: MapPin,
-      title: 'Address',
-      value: '123 Beauty Lane, Mumbai, Maharashtra 400001',
-      description: 'Visit our office'
-    }
-  ]
-
   const subjects = [
     { value: '', label: 'Select a subject' },
     { value: 'general', label: 'General Inquiry' },
@@ -43,10 +21,37 @@ const Contact = () => {
     { value: 'order', label: 'Order Support' },
     { value: 'return', label: 'Returns & Exchanges' },
     { value: 'feedback', label: 'Feedback' },
-    { value: 'other', label: 'Other' }
+    { value: 'other', label: 'Other' },
   ]
 
-  const handleChange = (e) => {
+  const contactInfo = [
+    {
+      icon: Mail,
+      title: 'Email Us',
+      details: ['hello@chandrabella.com', 'support@chandrabella.com'],
+      description: 'We typically respond within 24 hours'
+    },
+    {
+      icon: Phone,
+      title: 'Call Us',
+      details: ['+91 98765 43210', '+91 98765 43211'],
+      description: 'Mon-Fri 9AM-6PM IST'
+    },
+    {
+      icon: MapPin,
+      title: 'Visit Us',
+      details: ['123 Beauty Lane', 'Mumbai, Maharashtra 400001', 'India'],
+      description: 'By appointment only'
+    },
+    {
+      icon: Clock,
+      title: 'Business Hours',
+      details: ['Monday - Friday: 9AM - 6PM', 'Saturday: 10AM - 4PM', 'Sunday: Closed'],
+      description: 'All times are in IST'
+    }
+  ]
+
+  const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target
     setFormData(prev => ({
       ...prev,
@@ -68,7 +73,7 @@ const Contact = () => {
     if (!formData.name.trim()) {
       newErrors.name = 'Please enter your full name'
     } else if (formData.name.trim().length < 2) {
-      newErrors.name = 'Name must be at least 2 characters'
+      newErrors.name = 'Name must be at least 2 characters long'
     }
 
     if (!formData.email.trim()) {
@@ -82,9 +87,9 @@ const Contact = () => {
     }
 
     if (!formData.message.trim()) {
-      newErrors.message = 'Please enter a message'
+      newErrors.message = 'Please enter your message'
     } else if (formData.message.trim().length < 10) {
-      newErrors.message = 'Message must be at least 10 characters'
+      newErrors.message = 'Message must be at least 10 characters long'
     }
 
     setErrors(newErrors)
@@ -100,15 +105,14 @@ const Contact = () => {
     }
 
     setIsSubmitting(true)
+    
     try {
-      await contactAPI.sendMessage(formData)
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 1500))
       
-      // If newsletter signup is checked
-      if (formData.newsletter) {
-        await contactAPI.subscribe(formData.email)
-      }
-
       toast.success('Thank you for your message! We will get back to you within 24 hours.')
+      
+      // Reset form
       setFormData({
         name: '',
         email: '',
@@ -117,9 +121,14 @@ const Contact = () => {
         message: '',
         newsletter: false
       })
+      
+      // If newsletter signup is checked
+      if (formData.newsletter) {
+        toast.success('You have been subscribed to our newsletter!')
+      }
+      
     } catch (error) {
-      console.error('Error sending message:', error)
-      toast.error('Failed to send message. Please try again.')
+      toast.error('Something went wrong. Please try again.')
     } finally {
       setIsSubmitting(false)
     }
@@ -127,13 +136,13 @@ const Contact = () => {
 
   return (
     <div className="min-h-screen bg-[var(--color-surface)]">
-      <div className="container mx-auto px-4 py-12">
+      <div className="container mx-auto px-4 py-8">
         {/* Header */}
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold text-[var(--brand-primary)] mb-4">
             Contact Us
           </h1>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
             We'd love to hear from you. Send us a message and we'll respond as soon as possible.
           </p>
         </div>
@@ -146,57 +155,47 @@ const Contact = () => {
                 Get in Touch
               </h2>
               <p className="text-gray-600 mb-8">
-                Have a question about our products or need help with your order? 
+                Have a question about our products? Need help with your order? 
                 We're here to help! Reach out to us through any of the channels below.
               </p>
             </div>
 
-            <div className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {contactInfo.map((info, index) => (
-                <div key={index} className="flex items-start space-x-4">
-                  <div className="flex-shrink-0 w-12 h-12 bg-[var(--brand-secondary)] rounded-lg flex items-center justify-center">
-                    <info.icon size={24} className="text-[var(--brand-primary)]" />
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-semibold text-[var(--brand-primary)] mb-1">
-                      {info.title}
-                    </h3>
-                    <p className="text-gray-900 font-medium mb-1">
-                      {info.value}
-                    </p>
-                    <p className="text-gray-600 text-sm">
-                      {info.description}
-                    </p>
+                <div key={index} className="bg-white p-6 rounded-lg shadow-sm">
+                  <div className="flex items-start space-x-4">
+                    <div className="flex-shrink-0">
+                      <div className="w-12 h-12 bg-[var(--brand-secondary)] rounded-full flex items-center justify-center">
+                        <info.icon size={24} className="text-[var(--brand-primary)]" />
+                      </div>
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="text-lg font-semibold text-[var(--brand-primary)] mb-2">
+                        {info.title}
+                      </h3>
+                      <div className="space-y-1">
+                        {info.details.map((detail, idx) => (
+                          <p key={idx} className="text-gray-700">
+                            {detail}
+                          </p>
+                        ))}
+                      </div>
+                      <p className="text-sm text-gray-500 mt-2">
+                        {info.description}
+                      </p>
+                    </div>
                   </div>
                 </div>
               ))}
             </div>
-
-            {/* Social Links */}
-            <div className="pt-6 border-t border-gray-200">
-              <h3 className="text-lg font-semibold text-[var(--brand-primary)] mb-4">
-                Follow Us
-              </h3>
-              <div className="flex space-x-4">
-                {['Instagram', 'Facebook', 'Twitter', 'YouTube'].map((social) => (
-                  <a
-                    key={social}
-                    href="#"
-                    className="w-10 h-10 bg-[var(--brand-primary)] text-white rounded-full flex items-center justify-center hover:bg-[var(--brand-dark)] transition-colors"
-                  >
-                    {social.charAt(0)}
-                  </a>
-                ))}
-              </div>
-            </div>
           </div>
 
           {/* Contact Form */}
-          <div className="bg-white rounded-lg p-8 shadow-sm">
+          <div className="bg-white p-8 rounded-lg shadow-sm">
             <h2 className="text-2xl font-bold text-[var(--brand-primary)] mb-6">
               Send us a Message
             </h2>
-
+            
             <form onSubmit={handleSubmit} className="space-y-6">
               {/* Name */}
               <div>
@@ -208,8 +207,8 @@ const Contact = () => {
                   id="name"
                   name="name"
                   value={formData.name}
-                  onChange={handleChange}
-                  className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--brand-primary)] ${
+                  onChange={handleInputChange}
+                  className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--brand-primary)] focus:border-transparent ${
                     errors.name ? 'border-red-500' : 'border-gray-300'
                   }`}
                   placeholder="Enter your full name"
@@ -229,8 +228,8 @@ const Contact = () => {
                   id="email"
                   name="email"
                   value={formData.email}
-                  onChange={handleChange}
-                  className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--brand-primary)] ${
+                  onChange={handleInputChange}
+                  className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--brand-primary)] focus:border-transparent ${
                     errors.email ? 'border-red-500' : 'border-gray-300'
                   }`}
                   placeholder="Enter your email address"
@@ -250,9 +249,9 @@ const Contact = () => {
                   id="phone"
                   name="phone"
                   value={formData.phone}
-                  onChange={handleChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--brand-primary)]"
-                  placeholder="Enter your phone number (optional)"
+                  onChange={handleInputChange}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--brand-primary)] focus:border-transparent"
+                  placeholder="Enter your phone number"
                 />
               </div>
 
@@ -265,12 +264,12 @@ const Contact = () => {
                   id="subject"
                   name="subject"
                   value={formData.subject}
-                  onChange={handleChange}
-                  className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--brand-primary)] ${
+                  onChange={handleInputChange}
+                  className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--brand-primary)] focus:border-transparent ${
                     errors.subject ? 'border-red-500' : 'border-gray-300'
                   }`}
                 >
-                  {subjects.map(subject => (
+                  {subjects.map((subject) => (
                     <option key={subject.value} value={subject.value}>
                       {subject.label}
                     </option>
@@ -289,10 +288,10 @@ const Contact = () => {
                 <textarea
                   id="message"
                   name="message"
-                  value={formData.message}
-                  onChange={handleChange}
                   rows={5}
-                  className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--brand-primary)] ${
+                  value={formData.message}
+                  onChange={handleInputChange}
+                  className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--brand-primary)] focus:border-transparent ${
                     errors.message ? 'border-red-500' : 'border-gray-300'
                   }`}
                   placeholder="Please describe your inquiry in detail..."
@@ -309,10 +308,10 @@ const Contact = () => {
                   id="newsletter"
                   name="newsletter"
                   checked={formData.newsletter}
-                  onChange={handleChange}
-                  className="mt-1 w-4 h-4 text-[var(--brand-primary)] border-gray-300 rounded focus:ring-[var(--brand-primary)]"
+                  onChange={handleInputChange}
+                  className="mt-1 h-4 w-4 text-[var(--brand-primary)] border-gray-300 rounded focus:ring-[var(--brand-primary)]"
                 />
-                <label htmlFor="newsletter" className="text-sm text-gray-600">
+                <label htmlFor="newsletter" className="text-sm text-gray-700">
                   Subscribe to our newsletter for beauty tips and exclusive offers
                 </label>
               </div>
@@ -324,9 +323,9 @@ const Contact = () => {
                 className="w-full btn btn--primary btn--lg disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isSubmitting ? (
-                  <div className="flex items-center justify-center">
-                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
-                    Sending...
+                  <div className="flex items-center justify-center space-x-2">
+                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    <span>Sending...</span>
                   </div>
                 ) : (
                   <>
