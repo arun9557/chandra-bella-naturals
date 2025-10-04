@@ -128,7 +128,7 @@ const About = () => {
                     with friends and family.
                   </p>
                   <p>
-                    Today, we're proud to serve thousands of customers worldwide, all while maintaining 
+                    Today, we&apos;re proud to serve thousands of customers worldwide, all while maintaining 
                     our commitment to purity, sustainability, and ethical practices.
                   </p>
                 </div>
@@ -183,7 +183,7 @@ const About = () => {
               Our Process
             </h2>
             <p className="text-gray-600 max-w-2xl mx-auto">
-              From concept to your doorstep, here's how we create our natural beauty products
+              From concept to your doorstep, here&apos;s how we create our natural beauty products
             </p>
           </div>
 

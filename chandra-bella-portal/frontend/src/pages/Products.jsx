@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { Search, Filter, Grid, List } from 'lucide-react'
 import ProductCard from '../components/ProductCard'
-import { getAllProducts, searchProducts, getProductsByCategory } from '../data/productData'
+import { getAllProducts, searchProducts } from '../data/productData'
 
 const Products = () => {
   const [searchParams] = useSearchParams()
@@ -15,7 +15,6 @@ const Products = () => {
   const [minRating, setMinRating] = useState('')
   const [sortBy, setSortBy] = useState('name')
   const [viewMode, setViewMode] = useState('grid')
-  const [selectedProduct, setSelectedProduct] = useState(null)
 
   const categories = [
     { value: '', label: 'All Categories' },
@@ -145,7 +144,6 @@ const Products = () => {
   }
 
   const handleViewDetails = (product) => {
-    setSelectedProduct(product)
     // You can implement a modal or navigate to product detail page
     console.log('View details for:', product)
   }

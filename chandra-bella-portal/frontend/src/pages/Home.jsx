@@ -7,7 +7,6 @@ import { getFeaturedProducts } from '../data/productData'
 const Home = () => {
   const [featuredProducts, setFeaturedProducts] = useState([])
   const [loading, setLoading] = useState(true)
-  const [selectedProduct, setSelectedProduct] = useState(null)
 
   useEffect(() => {
     loadFeaturedProducts()
@@ -28,7 +27,6 @@ const Home = () => {
   }
 
   const handleViewDetails = (product) => {
-    setSelectedProduct(product)
     // You can implement a modal or navigate to product detail page
     console.log('View details for:', product)
   }

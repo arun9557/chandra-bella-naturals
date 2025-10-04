@@ -1,5 +1,5 @@
-/* Import the existing CSS from the original style.css */
-@import url('./styles/global.css');
+/* Import the global CSS styles */
+@import './styles/global.css';
 
 /* Reset and base styles */
 * {
